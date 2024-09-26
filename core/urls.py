@@ -22,7 +22,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/',include('accounts.urls'))
+    path('accounts/',include('accounts.urls')),
+    path('products/',include('products.urls')),
+    path('kgn-admin/',include('kgn_admin.urls')),
+    path('orders',include('orders.urls')),
+    path('customer',include('customer.urls')),
+    
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

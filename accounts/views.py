@@ -18,7 +18,6 @@ from portals.email_utility import send_email_async
 from portals.services import generate_token
 
 
-
 import requests
 def send_otp_to_phone(phone_number,otp) :
     try : 
@@ -27,15 +26,12 @@ def send_otp_to_phone(phone_number,otp) :
         response = requests.get(url)
         return otp
     except Exception as e :
-        print(str(e),"----------------------exception ")
         return None
-    
 
 class UserAPI(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
-
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
@@ -49,7 +45,7 @@ class RegisterUserApi(APIView):
                 request.data['sms_otp']  = sms_otp 
                 if  serializer.is_valid():
                     user = serializer.save()
-                    token = generate_token(user.email)
+                    token = generate_token(user.mobile_number)
                     return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
                 error_list = [serializer.errors[error][0] for error in serializer.errors]
                 return Response({"error": True, "message": error_list}, status=status.HTTP_400_BAD_REQUEST)
@@ -105,9 +101,10 @@ class LoginAPI(APIView):
             return Response({"error" : False, "message" : "OTP send Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
  
 class LoginWithUsernamePassword(APIView):
- def post(self,request,*args, **kwargs):
+    def post(self,request,*args, **kwargs):
         try : 
             username       = request.data.get('username')
             password       = request.data.get('password')
@@ -117,9 +114,9 @@ class LoginWithUsernamePassword(APIView):
             token = generate_token(user.mobile_number)
             password_match = check_password(password,user.password)
             serializer = UserSerializer2(user)
-            data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
+            # data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
-                return Response(data,status=status.HTTP_200_OK)
+                return Response({"error" : False, "message" : "User logged in successfully",token : token},status=status.HTTP_200_OK)
             return Response({"error" : True, "message" : "Password is not Matched"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

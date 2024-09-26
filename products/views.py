@@ -22,7 +22,7 @@ class SubCategoryAPI(GenericMethodsMixin,APIView):
     lookup_field     = "id" 
     
 class ProductAPI(GenericMethodsMixin,APIView):
-    model            = Products
+    model            = Product
     serializer_class = ProductSerializer
     lookup_field     = "id"
 

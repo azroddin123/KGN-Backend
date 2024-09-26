@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'portals',
     'products',
     'customer',
-    'orders'    
+    'orders',
+    'kgn_admin'    
 ]
 
 MIDDLEWARE = [

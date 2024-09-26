@@ -14,10 +14,9 @@ class SubCategorySerializer(ModelSerializer):
         model = SubCategory
         fields = "__all__"
         
-
 class ProductSerializer(ModelSerializer):
     class Meta :
-        model = Products
+        model = Product
         fields = "__all__"
         
         
