@@ -4,6 +4,10 @@ from .managers import UserManager
 import uuid
 from portals.choices import UserChoices
 # Create your models here.
+
+import os 
+
+
 class User(AbstractBaseUser):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
     email      = models.EmailField(
@@ -48,3 +52,10 @@ class User(AbstractBaseUser):
     
     def __str__(self) -> str:
         return self.username
+    
+    
+    def delete(self, *args, **kwargs):
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
+        super(MyModel, self).delete(*args, **kwargs)

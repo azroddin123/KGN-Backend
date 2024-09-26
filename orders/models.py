@@ -7,7 +7,7 @@ from accounts.models import User
 
 
 class Cart(BaseModel):
-    user        = models.ForeignKey(User, on_delete=models.CASCADE)
+    user        = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     ordered     = models.BooleanField(default=False)
     total_price = models.FloatField(default=0)
 
@@ -15,9 +15,9 @@ class Cart(BaseModel):
         return str(self.user.username) + " "+ str(self.total_price)
 
 class CartItem(BaseModel):
-    cart      = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    user      = models.ForeignKey(User, on_delete=models.CASCADE)
-    product   = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart      = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True,blank=True)
+    user      = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    product   = models.ForeignKey(Product, on_delete=models.CASCADE,null=True,blank=True)
     price     = models.FloatField(default=0)
     quantity  = models.IntegerField(default=1)
 
@@ -29,7 +29,6 @@ class Orders(BaseModel):
     order_id          = models.CharField(max_length=100, blank=True)
     payment_id        = models.CharField(max_length=100, blank=True)
     payment_signature = models.CharField(max_length=100, blank=True)
-
 
 class OrderedItems(BaseModel):
     user  = models.ForeignKey(User, on_delete=models.CASCADE)
