@@ -8,7 +8,7 @@ class CategorySerializer(ModelSerializer):
     class Meta :
         model = Category
         exclude = ("created_on","updated_on")
-        
+
 
 class SubCategorySerializer(ModelSerializer):
     main_category_name   = serializers.SerializerMethodField()

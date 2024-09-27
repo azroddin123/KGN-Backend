@@ -32,6 +32,11 @@ class UserAPI(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
+    
+class CustomerAPI(GenericMethodsMixin,APIView):
+    model = User
+    serializer_class = UserSerializer1
+    lookup_field = "id"
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):

@@ -10,7 +10,6 @@ from orders.serializers import *
 from orders.models import * 
 from portals.GM2 import GenericMethodsMixin
 
-
 class CartAPI(GenericMethodsMixin,APIView):
     model            = Cart
     serializer_class = CartSerializer

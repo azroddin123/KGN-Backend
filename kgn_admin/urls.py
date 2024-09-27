@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import * 
 from products.views import * 
-
+from accounts.views import UserAPI,CustomerAPI
 
 urlpatterns = [
     
@@ -13,5 +13,8 @@ urlpatterns = [
     
     path('products',ProductAPI.as_view()),
     path('products/<str:pk>',ProductAPI.as_view()),
+        
+    path('customers',CustomerAPI.as_view()),
+    path('customers/<str:pk>',CustomerAPI.as_view()),
       
 ]
