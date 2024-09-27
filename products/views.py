@@ -17,9 +17,10 @@ class CategoryAPI(GenericMethodsMixin,APIView):
     lookup_field     = "id"
 
 class SubCategoryAPI(GenericMethodsMixin,APIView):
-    model            = SubCategory
-    serializer_class = SubCategorySerializer
-    lookup_field     = "id" 
+    model                   = SubCategory
+    serializer_class        = SubCategorySerializer
+    create_serializer_class = SubCategorySerializer1
+    lookup_field            = "id" 
     
 class ProductAPI(GenericMethodsMixin,APIView):
     model            = Product

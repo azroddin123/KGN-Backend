@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from products.models import *
 
 
@@ -6,17 +7,34 @@ from products.models import *
 class CategorySerializer(ModelSerializer):
     class Meta :
         model = Category
-        fields = "__all__"
+        exclude = ("created_on","updated_on")
         
 
 class SubCategorySerializer(ModelSerializer):
+    main_category_name   = serializers.SerializerMethodField()
     class Meta :
         model = SubCategory
         fields = "__all__"
+    def get_main_category_name(self,obj):
+        if obj.category:
+            return obj.category.category_name
+        return None
+    
+class SubCategorySerializer1(ModelSerializer):
+    class Meta :
+        model = SubCategory
+        exclude = ("created_on","updated_on")
         
 class ProductSerializer(ModelSerializer):
+    sub_category = serializers.SerializerMethodField()
     class Meta :
         model = Product
-        fields = "__all__"
+        exclude = ("created_on","updated_on")
+    
+    def get_sub_category(self,obj):
+        if obj.sub_category:
+            return obj.sub_category.name
+        return None
+    
         
         

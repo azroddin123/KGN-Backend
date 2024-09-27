@@ -96,7 +96,6 @@ class LoginAPI(APIView):
             sms_otp           = randint(100001,999999)
             user.sms_otp      = sms_otp
             otp = send_otp_to_phone(mobile_number,sms_otp)
-            print(otp,"----------------------------otp-------------------------------")
             user.save()
             return Response({"error" : False, "message" : "OTP send Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
@@ -120,3 +119,16 @@ class LoginWithUsernamePassword(APIView):
             return Response({"error" : True, "message" : "Password is not Matched"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+class ChangePasswordApi(APIView):
+    def post(self,request,*args, **kwargs):
+        try : 
+            serializer = ChangePasswordSerializer(data=request.data,context={'request': self.request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+                return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+

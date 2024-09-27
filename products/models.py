@@ -8,6 +8,7 @@ class Category(BaseModel):
     category_image       = models.ImageField(upload_to="category/",null=True,blank=True)
     category_description = models.TextField(null=True,blank=True)
     
+    
     def delete(self, *args, **kwargs):
         if self.category_image:
             if os.path.isfile(self.category_image.path):
@@ -20,8 +21,6 @@ class SubCategory(BaseModel):
     category_image        = models.ImageField(upload_to="sub_category/",null=True,blank=True)
     description           = models.TextField(null=True,blank=True)
 
-
-        
     def delete(self, *args, **kwargs):
         if self.category_image:
             if os.path.isfile(self.category_image.path):

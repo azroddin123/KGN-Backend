@@ -25,8 +25,8 @@ urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('products/',include('products.urls')),
     path('kgn-admin/',include('kgn_admin.urls')),
-    path('orders',include('orders.urls')),
-    path('customer',include('customer.urls')),
+    path('orders/',include('orders.urls')),
+    path('customers/',include('customer.urls')),
     
     
 ]
