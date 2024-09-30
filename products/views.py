@@ -10,7 +10,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
+class StoreAPI(GenericMethodsMixin,APIView):
+    model            = Store
+    serializer_class = StoreSerializer
+    lookup_field     = "id"
+    
 class CategoryAPI(GenericMethodsMixin,APIView):
     model            = Category
     serializer_class = CategorySerializer

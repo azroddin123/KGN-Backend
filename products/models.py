@@ -33,6 +33,7 @@ class Store(BaseModel):
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     pincode        = models.CharField(max_length=6,null=True,blank=True)
     
+    
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128)
     sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,null=True,blank=True)
@@ -50,8 +51,6 @@ class Product(BaseModel):
             if os.path.isfile(self.product_image.path):
                 os.remove(self.product_image.path)
         super(Product, self).delete(*args, **kwargs)
-        
-
 
 class Inventory(models.Model):
     store        = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='inventory')

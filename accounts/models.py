@@ -28,7 +28,6 @@ class User(AbstractBaseUser):
     user_role        = models.CharField
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
-   
     
     USERNAME_FIELD = 'username'
     def __str__(self):
@@ -50,7 +49,6 @@ class User(AbstractBaseUser):
     def __str__(self) -> str:
         return self.username
 
-    
     def delete(self, *args, **kwargs):
         if self.profile_pic:
             if os.path.isfile(self.profile_pic.path):

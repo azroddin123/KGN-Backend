@@ -40,4 +40,9 @@ class InventorySerializer(ModelSerializer):
         model = Inventory
         exclude = ("created_on","updated_on")
         
-         
+
+class StoreSerializer(ModelSerializer):
+    class Meta :
+        model = Store
+        exclude = ("created_on","updated_on")
+        

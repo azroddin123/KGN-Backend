@@ -48,6 +48,8 @@ class RegisterUserApi(APIView):
                 sms_otp   = randint(100000,999999)
                 request.POST._mutable = True
                 request.data['sms_otp']  = sms_otp 
+                otp = send_otp_to_phone(mobile_number,sms_otp) 
+                print(otp)
                 if  serializer.is_valid():
                     user = serializer.save()
                     token = generate_token(user.mobile_number)

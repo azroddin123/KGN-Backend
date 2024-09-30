@@ -16,5 +16,11 @@ urlpatterns = [
         
     path('customers',CustomerAPI.as_view()),
     path('customers/<str:pk>',CustomerAPI.as_view()),
+    
+    path('inventory',InventoryAPI.as_view()),
+    path('inventory/<str:pk>',InventoryAPI.as_view()),
+    
+    path('store',StoreAPI.as_view()),
+    path('store/<str:pk>',StoreAPI.as_view()),
       
 ]
