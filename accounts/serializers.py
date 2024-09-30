@@ -17,8 +17,9 @@ class UserSerializer(ModelSerializer):
         return user
 
 class UserSerializer2(ModelSerializer):
+    class Meta :
         model     = User
-        fields    = ("id", "email", "username", "profile_pic", "mobile_number", "accepted_policy")
+        fields    = ("id", "email", "username",'user_role',"profile_pic", "mobile_number", "accepted_policy")
 
 class UserSerializer1(ModelSerializer):
     class Meta :
