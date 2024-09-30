@@ -18,7 +18,7 @@ class User(AbstractBaseUser):
     username         = models.CharField(max_length = 50)
     profile_pic      = models.ImageField(upload_to="user/",null=True,blank=True)
     mobile_number    = models.CharField(max_length=20,unique=True)
-    user_role        = models.CharField(choices=UserChoices.choices, max_length=150, default=UserChoices.CUSTOMER)
+    user_role        = models.CharField(choices=UserChoices.choices, max_length=150,default=UserChoices.CUSTOMER)
     accepted_policy  = models.BooleanField(default=False)
     objects          = UserManager()
     email_otp        = models.CharField(max_length=6,blank=True,null=True)
