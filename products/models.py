@@ -26,7 +26,13 @@ class SubCategory(BaseModel):
             if os.path.isfile(self.category_image.path):
                 os.remove(self.category_image.path)
         super(SubCategory, self).delete(*args, **kwargs)
-        
+
+
+class Store(BaseModel):
+    store_name     = models.CharField(max_length=256,null=True,blank=True)
+    store_address  = models.CharField(max_length=256,null=True,blank=True)
+    pincode        = models.CharField(max_length=6,null=True,blank=True)
+    
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128)
     sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,null=True,blank=True)
@@ -44,3 +50,17 @@ class Product(BaseModel):
             if os.path.isfile(self.product_image.path):
                 os.remove(self.product_image.path)
         super(Product, self).delete(*args, **kwargs)
+        
+
+
+class Inventory(models.Model):
+    store        = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='inventory')
+    product      = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='inventory')
+    stock        = models.PositiveIntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('store', 'product')
+
+    def __str__(self):
+        return f"{self.product.product_name} - {self.store.store_name} (Stock: {self.stock})"

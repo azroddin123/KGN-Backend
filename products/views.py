@@ -27,3 +27,7 @@ class ProductAPI(GenericMethodsMixin,APIView):
     serializer_class = ProductSerializer
     lookup_field     = "id"
 
+class InventoryAPI(GenericMethodsMixin,APIView):
+    model            = Inventory
+    serializer_class = InventorySerializer
+    lookup_field     = "id"

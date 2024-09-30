@@ -9,7 +9,6 @@ class CategorySerializer(ModelSerializer):
         model = Category
         exclude = ("created_on","updated_on")
 
-
 class SubCategorySerializer(ModelSerializer):
     main_category_name   = serializers.SerializerMethodField()
     class Meta :
@@ -36,5 +35,9 @@ class ProductSerializer(ModelSerializer):
             return obj.sub_category.name
         return None
     
+class InventorySerializer(ModelSerializer):
+    class Meta :
+        model = Inventory
+        exclude = ("created_on","updated_on")
         
-        
+         
