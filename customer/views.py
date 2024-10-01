@@ -33,7 +33,7 @@ class StoreApi(GenericMethodsMixin,APIView):
     
 class GetSubcategoriesAPI(APIView):
     def get(self, request, pk=None, *args, **kwargs):
-        # try : 
+        try : 
            if pk in ["0", None]:
                 category_id = request.GET.get('category_id')
                 if category_id is None :
@@ -42,8 +42,8 @@ class GetSubcategoriesAPI(APIView):
                     data = SubCategory.objects.filter(category=category_id)
                 response = paginate_data(SubCategory, SubCategorySerializer, request,data)
                 return Response(response,status=status.HTTP_200_OK)
-        # except Exception as e:
-        #     return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
 
 
 class GetAllProductsBySubCategoryAPI(GenericMethodsMixin,APIView):
