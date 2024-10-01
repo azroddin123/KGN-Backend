@@ -13,6 +13,6 @@ urlpatterns = [
     
     
     path('all-categories',GetSubcategoriesAPI.as_view()),
-    path('all-products',GetAllProductsBySubCategoryAPI)
+    path('all-products',GetAllProductsBySubCategoryAPI.as_view())
     
 ]
