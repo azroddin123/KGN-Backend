@@ -33,7 +33,12 @@ class Store(BaseModel):
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     pincode        = models.CharField(max_length=6,null=True,blank=True)
     
-    
+
+class ServiceArea(BaseModel):
+    store      = models.ForeignKey(Store,on_delete=models.CASCADE,null=True,blank=True)
+    pincode    = models.CharField(max_length=6)
+    area_name  = models.CharField(max_length=128)
+
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128)
     sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,null=True,blank=True)

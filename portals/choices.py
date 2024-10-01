@@ -5,7 +5,7 @@ class UserChoices(models.TextChoices):
     ADMIN              = ADMIN,ADMIN
     CUSTOMER           = CUSTOMER ,CUSTOMER 
     DELIVERY_MAN       = DELIVERY_MAN,DELIVERY_MAN
-    
+    STORE_ADMIN        = STORE_ADMIN,STORE_ADMIN 
 
 class PriceChoices(models.TextChoices):
     BEGINNER         = BEGINNER,BEGINNER

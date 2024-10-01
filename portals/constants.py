@@ -7,6 +7,7 @@ PRO            = "Pro"
 ADMIN              = "Admin"
 CUSTOMER           = "Customer"
 DELIVERY_MAN       = "Delivery_man"
+STORE_ADMIN        = "Store_admin"
 
 
 

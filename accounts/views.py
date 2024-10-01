@@ -76,7 +76,7 @@ class VerifyOTPApi(APIView):
             if user.sms_otp == sms_otp:
                 print(mobile_number,sms_otp)
                 token = generate_token(user.mobile_number)
-                return Response({"error": False, "message": "OTP verified successfully.","token" : token }, status=status.HTTP_200_OK)
+                return Response({"error": False, "message": "OTP verified successfully.","token" : token , "user_role" : user.user_role }, status=status.HTTP_200_OK)
             return Response({"error": True, "message": "Invalid OTP for Mobile Number."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e) ,"status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
@@ -140,3 +140,11 @@ class ChangePasswordApi(APIView):
                 return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserProfileAPI(APIView):
+    def get(self,request,*args,**kwargs):
+        try :
+            user_data = User.objects.get(id=request.thisUser.id)
+            serializer = UserSerializer2(user_data)
+            return Response({"error" : False, "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
