@@ -31,24 +31,31 @@ class StoreApi(GenericMethodsMixin,APIView):
     lookup_field     = "id"
     
     
-class GetSubcategoriesAPI(GenericMethodsMixin,APIView):
+class GetSubcategoriesAPI(APIView):
     def get(self, request, pk=None, *args, **kwargs):
-        try : 
+        # try : 
            if pk in ["0", None]:
-               category_id = request.GET.get('category_id')
-               data = SubCategory.objects.filter(category=category_id)
-               response = paginate_data(SubCategory, SubCategorySerializer, request,data)
-               return Response(response,status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+                category_id = request.GET.get('category_id')
+                if category_id is None :
+                    data = SubCategory.objects.all()
+                else : 
+                    data = SubCategory.objects.filter(category=category_id)
+                response = paginate_data(SubCategory, SubCategorySerializer, request,data)
+                return Response(response,status=status.HTTP_200_OK)
+        # except Exception as e:
+        #     return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
 
 
 class GetAllProductsBySubCategoryAPI(GenericMethodsMixin,APIView):
     def get(self, request, pk=None, *args, **kwargs):
         try : 
                sub_category = request.GET.get('sub_category')
-               data = Product.objects.filter(sub_category=sub_category)
+               if sub_category is None : 
+                    data = Product.objects.all()
+               else :
+                    data = Product.objects.filter(sub_category=sub_category)
                response = paginate_data(Product, ProductSerializer, request,data)
                return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+

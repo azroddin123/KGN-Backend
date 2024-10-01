@@ -66,7 +66,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "portals.middlewares.CustomAuthentication"
+    # "portals.middlewares.CustomAuthentication"
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'portals.middlewares.CustomAuthentication'
 ]
 
 ROOT_URLCONF = 'core.urls'

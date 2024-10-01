@@ -2,7 +2,7 @@ from django.db import models
 from portals.models import BaseModel
 import os 
 
-
+from accounts.models import User
 class Category(BaseModel):
     category_name        = models.CharField(max_length=128)
     category_image       = models.ImageField(upload_to="category/",null=True,blank=True)
@@ -29,6 +29,7 @@ class SubCategory(BaseModel):
 
 
 class Store(BaseModel):
+    store_admin    = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True) 
     store_name     = models.CharField(max_length=256,null=True,blank=True)
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     pincode        = models.CharField(max_length=6,null=True,blank=True)
@@ -38,6 +39,7 @@ class ServiceArea(BaseModel):
     store      = models.ForeignKey(Store,on_delete=models.CASCADE,null=True,blank=True)
     pincode    = models.CharField(max_length=6)
     area_name  = models.CharField(max_length=128)
+    
 
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128)

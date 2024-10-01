@@ -11,4 +11,8 @@ urlpatterns = [
     path('products',ProductAPI.as_view()),
     path('products/<str:pk>',ProductAPI.as_view()),
     
+    
+    path('all-categories',GetSubcategoriesAPI.as_view()),
+    path('all-products',GetAllProductsBySubCategoryAPI)
+    
 ]
