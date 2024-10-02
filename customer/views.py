@@ -46,9 +46,10 @@ class GetSubcategoriesAPI(APIView):
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
 
 
-class GetAllProductsBySubCategoryAPI(GenericMethodsMixin,APIView):
+class GetAllProductsBySubCategoryAPI(APIView):
     def get(self, request, pk=None, *args, **kwargs):
         try : 
+            if pk in ["0", None]:
                sub_category = request.GET.get('sub_category')
                if sub_category is None : 
                     data = Product.objects.all()

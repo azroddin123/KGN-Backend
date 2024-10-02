@@ -24,7 +24,7 @@ class User(AbstractBaseUser):
     email_otp        = models.CharField(max_length=6,blank=True,null=True)
     sms_otp          = models.CharField(max_length=6,blank=True,null=True)
     is_verified      = models.BooleanField(default=False)
-    pincode          = models.CharField(max_length=256,null=True,blank=True)
+    pincode          = models.CharField(max_length=6,default="413512")
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
     

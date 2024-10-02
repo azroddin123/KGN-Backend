@@ -35,10 +35,11 @@ class Store(BaseModel):
     pincode        = models.CharField(max_length=6,null=True,blank=True)
     
 
-class ServiceArea(BaseModel):
-    store      = models.ForeignKey(Store,on_delete=models.CASCADE,null=True,blank=True)
-    pincode    = models.CharField(max_length=6)
-    area_name  = models.CharField(max_length=128)
+class StorePincode(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='pincodes')
+    pincode = models.CharField(max_length=6)  
+    def __str__(self):
+        return f"{self.store.store_name} - {self.pincode}"
     
 
 class Product(BaseModel):
