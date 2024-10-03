@@ -104,7 +104,7 @@ class LoginAPI(APIView):
             user.sms_otp      = sms_otp
             otp = send_otp_to_phone(mobile_number,sms_otp)
             user.save()
-            return Response({"error" : False, "message" : "OTP send Successfully"},status=status.HTTP_200_OK)
+            return Response({"error" : False, "message" : "OTP send Successfully" , "otp" : user.sms_otp},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
 
