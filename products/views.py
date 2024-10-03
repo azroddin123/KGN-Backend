@@ -35,3 +35,5 @@ class InventoryAPI(GenericMethodsMixin,APIView):
     model            = Inventory
     serializer_class = InventorySerializer
     lookup_field     = "id"
+    
+

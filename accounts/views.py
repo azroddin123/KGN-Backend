@@ -22,6 +22,7 @@ import requests
 def send_otp_to_phone(phone_number,otp) :
     try : 
         api_key  = "bcbc6fc9-14d9-11ef-8b60-0200cd936042"
+        new_key = "841a5c5f-8159-11ef-8b17-0200cd936042"
         url    = f'https://2factor.in/API/V1/{api_key}/SMS/{phone_number}/{otp}/'
         response = requests.get(url)
         return otp

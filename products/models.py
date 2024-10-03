@@ -1,19 +1,21 @@
 from django.db import models
 from portals.models import BaseModel
 import os 
-
 from accounts.models import User
+
 class Category(BaseModel):
     category_name        = models.CharField(max_length=128)
     category_image       = models.ImageField(upload_to="category/",null=True,blank=True)
     category_description = models.TextField(null=True,blank=True)
-    
     
     def delete(self, *args, **kwargs):
         if self.category_image:
             if os.path.isfile(self.category_image.path):
                 os.remove(self.category_image.path)
         super(Category, self).delete(*args, **kwargs)
+        
+    def __str__(self):
+        return self.category_name
 
 class SubCategory(BaseModel):
     name                  = models.CharField(max_length=258)
@@ -26,17 +28,23 @@ class SubCategory(BaseModel):
             if os.path.isfile(self.category_image.path):
                 os.remove(self.category_image.path)
         super(SubCategory, self).delete(*args, **kwargs)
+        
+    def __str__(self):
+        return self.name
 
 
 class Store(BaseModel):
     store_admin    = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True) 
-    store_name     = models.CharField(max_length=256,null=True,blank=True)
+    store_name     = models.CharField(max_length=256,default="Store 1")
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     pincode        = models.CharField(max_length=6,null=True,blank=True)
     
+    def __str__(self):
+        return self.store_name
+    
 
 class StorePincode(models.Model):
-    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='pincodes')
+    store   = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='pincodes')
     pincode = models.CharField(max_length=6)  
     def __str__(self):
         return f"{self.store.store_name} - {self.pincode}"

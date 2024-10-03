@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     'products',
     'customer',
     'orders',
-    'kgn_admin'    
+    'kgn_admin',
+    'store_admin'
 ]
 
 MIDDLEWARE = [
@@ -97,7 +98,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

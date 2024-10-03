@@ -34,8 +34,6 @@ def user_verification_email(mail, otp):
     return msg
 
 
-
-
 from django.core.paginator import Paginator, EmptyPage
 def paginate_model_data(model, serializer, request, filter_key=None):
     try:
@@ -84,10 +82,7 @@ def paginate_data(model, serializer, request,data):
                 data = model.objects.filter(q_objects)  
         else :   
                 data = data
-        print("azhar is here ----------------")
-        print("data",data)         
         paginator = Paginator(data, limit)
-
         try:
             current_page_data = paginator.get_page(page_number)
         except EmptyPage:
@@ -105,70 +100,4 @@ def paginate_data(model, serializer, request,data):
         return response_data
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
-
-
-from datetime import datetime, timedelta
-def generate_one_hour_time_slots(opening_time, closing_time):
-    slots = []
-    current_time = opening_time
-    while current_time + timedelta(minutes=30) <= closing_time:
-        start_time_str = current_time.strftime('%I:%M %p')
-        end_time_str = (current_time + timedelta(minutes=30)).strftime('%I:%M %p')
-        slots.append((start_time_str, end_time_str))
-        current_time += timedelta(minutes=30)
-    return slots
-
-
-
-import datetime
-def find_available_slots(booked_slots, generated_slots):
-  available_slots = generated_slots.copy()  # Copy generated slots to avoid modifying original data
-  for booked_slot in booked_slots:
-    booked_start_time = booked_slot[0]
-    booked_end_time = booked_slot[1]
-    for i in range(len(available_slots)):
-      available_start_time = available_slots[i][0]
-      available_end_time = available_slots[i][1]
-      # Check if booked slot overlaps with available slot
-      if is_overlapping(booked_start_time, booked_end_time, available_start_time, available_end_time):
-        del available_slots[i]  
-        break  
-
-  return available_slots
-
-def is_overlapping(start1, end1, start2, end2):
-  # Convert times to datetime objects for comparison
-  datetime_start1 = datetime.datetime.strptime(start1, "%I:%M %p")
-  datetime_end1 = datetime.datetime.strptime(end1, "%I:%M %p")
-  datetime_start2 = datetime.datetime.strptime(start2, "%I:%M %p")
-  datetime_end2 = datetime.datetime.strptime(end2, "%I:%M %p")
-  # Check if one slot starts before the other ends
-  return (datetime_start1 < datetime_end2) and (datetime_start2 < datetime_end1)
-
-
-# from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
-# from phonepe.sdk.pg.env import Env
-# from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
-
-# def check_payment_status(transaction_id):
-#     try:
-#         merchant_id = settings.TEST_MERCHANT_ID 
-#         salt_key = settings.TEST_SALT_KEY 
-#         salt_index = settings.TEST_SALT_INDEX
-#         env = settings.TEST_ENV
-#         phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
-#         print("transaction_id", transaction_id)
-#         transaction_status_response = phonepe_client.check_status(merchant_transaction_id=transaction_id)
-#         transaction_state = transaction_status_response.data.state
-#         invoice  = Invoice.objects.filter(transaction_id=transaction_id)
-#         current_status = {
-#             "status": transaction_status_response.code,
-#             "message": transaction_status_response.message,
-#             "transaction_state": transaction_status_response.data.state
-#         }
-        
-#         return current_status
-#     except Exception as e:
-#         return {'error': str(e)}
     

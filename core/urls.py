@@ -27,7 +27,7 @@ urlpatterns = [
     path('kgn-admin/',include('kgn_admin.urls')),
     path('orders/',include('orders.urls')),
     path('customers/',include('customer.urls')),
-    
+    path('store-admin/',include('store_admin.urls'))
     
 ]
 if settings.DEBUG:
