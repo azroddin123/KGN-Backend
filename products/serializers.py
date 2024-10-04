@@ -25,11 +25,12 @@ class SubCategorySerializer1(ModelSerializer):
         exclude = ("created_on","updated_on")
         
 class ProductSerializer(ModelSerializer):
+    sub_category_name = serializers.SerializerMethodField()
     class Meta :
         model = Product
         exclude = ("created_on","updated_on")
     
-    def get_sub_category(self,obj):
+    def get_sub_category_name(self,obj):
         if obj.sub_category:
             return obj.sub_category.name
         return None
