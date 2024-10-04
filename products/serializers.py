@@ -25,7 +25,6 @@ class SubCategorySerializer1(ModelSerializer):
         exclude = ("created_on","updated_on")
         
 class ProductSerializer(ModelSerializer):
-    sub_category = serializers.SerializerMethodField()
     class Meta :
         model = Product
         exclude = ("created_on","updated_on")
