@@ -49,7 +49,7 @@ class RegisterUserApi(APIView):
                 sms_otp   = randint(100000,999999)
                 request.POST._mutable = True
                 request.data['sms_otp']  = sms_otp 
-                otp = send_otp_to_phone(mobile_number,sms_otp) 
+                # otp = send_otp_to_phone(mobile_number,sms_otp) 
                 print(otp)
                 if  serializer.is_valid():
                     user = serializer.save()
@@ -103,7 +103,7 @@ class LoginAPI(APIView):
             user              = User.objects.get(mobile_number=mobile_number)
             sms_otp           = randint(100001,999999)
             user.sms_otp      = sms_otp
-            otp = send_otp_to_phone(mobile_number,sms_otp)
+            # otp = send_otp_to_phone(mobile_number,sms_otp)
             user.save()
             return Response({"error" : False, "message" : "OTP send Successfully" , "otp" : user.sms_otp},status=status.HTTP_200_OK)
         except Exception as e :

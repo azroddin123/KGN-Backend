@@ -40,7 +40,7 @@ class Store(BaseModel):
     pincode        = models.CharField(max_length=6,null=True,blank=True)
     
     def __str__(self):
-        return self.store_name
+        return f"{self.store_name} - {self.store_admin.username}"
     
 
 class StorePincode(models.Model):
@@ -49,18 +49,15 @@ class StorePincode(models.Model):
     def __str__(self):
         return f"{self.store.store_name} - {self.pincode}"
     
-
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128)
     sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,null=True,blank=True)
     product_image        = models.ImageField(upload_to="product/",null=True,blank=True)
     price                = models.PositiveIntegerField()
-    stock                = models.PositiveIntegerField()
     description          = models.TextField(null=True,blank=True)
     
     def __str__(self):
         return self.product_name
-
         
     def delete(self, *args, **kwargs):
         if self.product_image:

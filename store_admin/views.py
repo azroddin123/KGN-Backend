@@ -55,7 +55,7 @@ class StoreInventoryAPI(GenericMethodsMixin,APIView):
     model = Inventory
     serializer_class = InventorySerializer
     lookup_field ="id"    
-    
+
     def get(self,request,pk=None,*args,**kwargs):
         try : 
            if pk in ["0", None]:
