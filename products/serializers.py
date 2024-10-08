@@ -18,11 +18,17 @@ class SubCategorySerializer(ModelSerializer):
         if obj.category:
             return obj.category.category_name
         return None
-    
+
 class SubCategorySerializer1(ModelSerializer):
     class Meta :
         model = SubCategory
         exclude = ("created_on","updated_on")
+        
+class CategorySubCategorySerializer(ModelSerializer):
+    subcategory = SubCategorySerializer1(many=True,read_only=True)
+    class Meta :
+        model = Category
+        fields = ('category_name','category_description','category_image','subcategory')
         
 class ProductSerializer(ModelSerializer):
     sub_category_name = serializers.SerializerMethodField()

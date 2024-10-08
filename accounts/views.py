@@ -21,8 +21,8 @@ from portals.services import generate_token
 import requests
 def send_otp_to_phone(phone_number,otp) :
     try : 
-        api_key  = "bcbc6fc9-14d9-11ef-8b60-0200cd936042"
-        new_key = "841a5c5f-8159-11ef-8b17-0200cd936042"
+        old_key  = "bcbc6fc9-14d9-11ef-8b60-0200cd936042"
+        api_key = "841a5c5f-8159-11ef-8b17-0200cd936042"
         url    = f'https://2factor.in/API/V1/{api_key}/SMS/{phone_number}/{otp}/'
         response = requests.get(url)
         return otp
@@ -138,7 +138,6 @@ class ChangePasswordApi(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
                 return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserProfileAPI(APIView):
     def get(self,request,*args,**kwargs):

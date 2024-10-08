@@ -4,7 +4,7 @@ from django.shortcuts import render
 from products.models import * 
 from products.serializers import * 
 from portals.GM2 import GenericMethodsMixin
-
+from django.db import transaction
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -35,5 +35,26 @@ class InventoryAPI(GenericMethodsMixin,APIView):
     model            = Inventory
     serializer_class = InventorySerializer
     lookup_field     = "id"
+  
+  
+import json  
+class AddStoreAPI(GenericMethodsMixin,APIView):
+    model = Store
+    serializer_class = StoreSerializer
+    lookup_field = "id"
     
-
+    def post(self,request,*args,**kwargs):
+        with transaction.atomic():
+            try : 
+                pincode_list = request.data.get('pincode_list', '[]')
+                pincode_list = json.loads(pincode_list)
+                print("uploaded_pins",pincode_list)
+                serializer = StoreSerializer(data=request.data)
+                if serializer.is_valid():
+                    store = serializer.save()
+                    pin_list = [StorePincode(pincode=pin,store=store) for pin in pincode_list]
+                    StorePincode.objects.bulk_create(pin_list)
+                    return Response({"error" : False, "data" : serializer.data},status=status.HTTP_201_CREATED)
+                return Response({"error" : True , "errors" : serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e :
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

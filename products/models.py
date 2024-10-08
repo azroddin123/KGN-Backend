@@ -19,7 +19,7 @@ class Category(BaseModel):
 
 class SubCategory(BaseModel):
     name                  = models.CharField(max_length=258)
-    category              = models.ForeignKey(Category,on_delete=models.CASCADE,null=True,blank=True)
+    category              = models.ForeignKey(Category,on_delete=models.CASCADE,related_name="subcategory",null=True,blank=True)
     category_image        = models.ImageField(upload_to="sub_category/",null=True,blank=True)
     description           = models.TextField(null=True,blank=True)
 
@@ -34,10 +34,11 @@ class SubCategory(BaseModel):
 
 
 class Store(BaseModel):
-    store_admin    = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True) 
+    store_admin    = models.ForeignKey(User,on_delete=models.CASCADE) 
     store_name     = models.CharField(max_length=256,default="Store 1")
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     pincode        = models.CharField(max_length=6,null=True,blank=True)
+    store_image    = models.ImageField(upload_to="stores/",null=True,blank=True)
     
     def __str__(self):
         return f"{self.store_name} - {self.store_admin.username}"
