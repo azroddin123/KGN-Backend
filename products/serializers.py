@@ -61,4 +61,21 @@ class StoreSerializer(ModelSerializer):
     class Meta :
         model = Store
         exclude = ("created_on","updated_on")
+
+class SPSerializer(ModelSerializer):
+    class Meta :
+        model = StorePincode
+        fields=('pincode',)
+
+class StorePinSerializer(ModelSerializer):
+    store_admin = serializers.SerializerMethodField()
+    pincodes = SPSerializer(many=True,read_only=True)
+    class Meta :
+        model = Store 
+        fields = ('store_name','store_address','store_admin','store_image','pincodes')
+    
+    def get_store_admin(self,obj):
+        if obj.store_admin:
+            return obj.store_admin.username
+        return None
         

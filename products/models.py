@@ -37,7 +37,6 @@ class Store(BaseModel):
     store_admin    = models.ForeignKey(User,on_delete=models.CASCADE) 
     store_name     = models.CharField(max_length=256,default="Store 1")
     store_address  = models.CharField(max_length=256,null=True,blank=True)
-    pincode        = models.CharField(max_length=6,null=True,blank=True)
     store_image    = models.ImageField(upload_to="stores/",null=True,blank=True)
     
     def __str__(self):

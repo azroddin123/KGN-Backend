@@ -40,7 +40,7 @@ class InventoryAPI(GenericMethodsMixin,APIView):
 import json  
 class AddStoreAPI(GenericMethodsMixin,APIView):
     model = Store
-    serializer_class = StoreSerializer
+    serializer_class = StorePinSerializer
     lookup_field = "id"
     
     def post(self,request,*args,**kwargs):
@@ -52,10 +52,12 @@ class AddStoreAPI(GenericMethodsMixin,APIView):
                 request.POST._mutable = True
                 request.data['store_admin'] = request.thisUser.id
                 serializer = StoreSerializer(data=request.data)
+                
                 if serializer.is_valid():
                     store = serializer.save()
                     pin_list = [StorePincode(pincode=pin,store=store) for pin in pincode_list]
                     StorePincode.objects.bulk_create(pin_list)
+                    serializer = StorePinSerializer(store)
                     return Response({"error" : False, "data" : serializer.data},status=status.HTTP_201_CREATED)
                 return Response({"error" : True , "errors" : serializer.errors},status=status.HTTP_400_BAD_REQUEST)
             except Exception as e :
