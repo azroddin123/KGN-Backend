@@ -52,7 +52,6 @@ class AddStoreAPI(GenericMethodsMixin,APIView):
                 request.POST._mutable = True
                 request.data['store_admin'] = request.thisUser.id
                 serializer = StoreSerializer(data=request.data)
-                
                 if serializer.is_valid():
                     store = serializer.save()
                     pin_list = [StorePincode(pincode=pin,store=store) for pin in pincode_list]

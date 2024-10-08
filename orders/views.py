@@ -29,4 +29,16 @@ class OrderedItemAPI(GenericMethodsMixin,APIView):
     model            = OrderedItems
     serializer_class = OrderedItemSerializer
     lookup_field     = "id"
-    
+
+
+class AddItemToCartAPI(APIView):
+    def post(self,request,*args,**kwargs):
+        cart = Cart.objects.get(user=request.thisUser.id)
+        request.POST._mutable = True
+        request.data['cart'] = cart
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"data" : serializer.data},status=status.HTTP_200_OK)
+        
+        

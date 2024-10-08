@@ -94,3 +94,11 @@ class ProductsListWithSubcategoriesAPI(APIView):
                 return Response(serializer.data,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
+
+class AddProductToCartAPI(APIView):
+    def post(self,request,*args,**kwargs):
+        try :
+            pass
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
