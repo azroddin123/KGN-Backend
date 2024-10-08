@@ -30,6 +30,8 @@ class CategorySubCategorySerializer(ModelSerializer):
         model = Category
         fields = ('category_name','category_description','category_image','subcategory')
         
+
+
 class ProductSerializer(ModelSerializer):
     sub_category_name = serializers.SerializerMethodField()
     class Meta :
@@ -40,7 +42,15 @@ class ProductSerializer(ModelSerializer):
         if obj.sub_category:
             return obj.sub_category.name
         return None
-    
+
+
+class ProductSubCategorySerializer(ModelSerializer):
+    products = ProductSerializer(many=True,read_only=True)
+    class Meta :
+            model = SubCategory
+            fields = ('name','category','description','category_image','products')
+            
+            
 class InventorySerializer(ModelSerializer):
     class Meta :
         model = Inventory

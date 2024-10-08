@@ -52,7 +52,7 @@ class StorePincode(models.Model):
     
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128)
-    sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,null=True,blank=True)
+    sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,related_name="products",null=True,blank=True)
     product_image        = models.ImageField(upload_to="product/",null=True,blank=True)
     price                = models.PositiveIntegerField()
     description          = models.TextField(null=True,blank=True)

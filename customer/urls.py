@@ -1,5 +1,9 @@
-from django.urls import path
+from django.urls import path,include
 from .views import * 
+from rest_framework.routers import DefaultRouter
+from .views import ProductViewSet
+router = DefaultRouter()
+router.register(r'products-filter', ProductViewSet) 
 
 urlpatterns = [
     path('category',CategoryAPI.as_view()),
@@ -14,6 +18,8 @@ urlpatterns = [
     path('all-categories',GetSubcategoriesAPI.as_view()),
     path('all-products',GetAllProductsBySubCategoryAPI.as_view()),
     
-    path('main-category',GetCategoriesWithSubCategoriesAPI.as_view())
+    path('main-category',GetCategoriesWithSubCategoriesAPI.as_view()),
+    path('subcategory-products',ProductsListWithSubcategoriesAPI.as_view()),
+    path('', include(router.urls)),
     
 ]

@@ -4,10 +4,26 @@ from products.serializers import *
 from portals.GM2 import GenericMethodsMixin
 from portals.services import paginate_data
 
-from rest_framework import status
+from rest_framework import status,viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 
+class ProductFilter(filters.FilterSet):
+    min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
+    class Meta:
+        model = Product
+        fields = ('product_name', 'sub_category', 'price', 'description')
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]  # Enable filtering
+    filterset_class = ProductFilter
 
 class CategoryAPI(GenericMethodsMixin,APIView):
     model            = Category
@@ -23,7 +39,6 @@ class ProductAPI(GenericMethodsMixin,APIView):
     model            = Product
     serializer_class = ProductSerializer
     lookup_field     = "id"
-    
 
 class StoreApi(GenericMethodsMixin,APIView):
     model = Store
@@ -66,6 +81,16 @@ class GetCategoriesWithSubCategoriesAPI(APIView):
         try : 
                 data = Category.objects.all()
                 serializer = CategorySubCategorySerializer(data,many=True)
+                return Response(serializer.data,status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
+
+class ProductsListWithSubcategoriesAPI(APIView):
+    def get(self,request,pk=None,*args,**kwargs):
+        try : 
+                data = SubCategory.objects.all()
+                serializer = ProductSubCategorySerializer(data,many=True)
                 return Response(serializer.data,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)

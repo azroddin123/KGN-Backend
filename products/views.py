@@ -49,6 +49,8 @@ class AddStoreAPI(GenericMethodsMixin,APIView):
                 pincode_list = request.data.get('pincode_list', '[]')
                 pincode_list = json.loads(pincode_list)
                 print("uploaded_pins",pincode_list)
+                request.POST._mutable = True
+                request.data['store_admin'] = request.thisUser.id
                 serializer = StoreSerializer(data=request.data)
                 if serializer.is_valid():
                     store = serializer.save()
