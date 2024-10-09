@@ -21,9 +21,10 @@ def create_user_cart(sender, created, instance, *args, **kwargs):
         Cart.objects.create(user=instance)
 
 class CartItem(BaseModel):
-    cart      = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True,blank=True)
+    cart      = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True,blank=True,related_name="cart")
     product   = models.ForeignKey(Product, on_delete=models.CASCADE,null=True,blank=True)
     quantity  = models.IntegerField(default=1)
+
 
 class Orders(BaseModel):
     user              = models.ForeignKey(User, on_delete=models.CASCADE)
