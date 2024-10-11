@@ -11,11 +11,10 @@ class User(AbstractBaseUser):
     email      = models.EmailField(
         verbose_name='email address',
         max_length=255,
-        null=True,
-        blank=True
+        unique=True
     )
     is_admin         = models.BooleanField(default=False)
-    username         = models.CharField(max_length = 50)
+    username         = models.CharField(max_length=256,unique=True)
     profile_pic      = models.ImageField(upload_to="user/",null=True,blank=True)
     mobile_number    = models.CharField(max_length=20,unique=True)
     user_role        = models.CharField(choices=UserChoices.choices, max_length=150,default=UserChoices.CUSTOMER)

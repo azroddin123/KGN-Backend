@@ -2,6 +2,7 @@ from django.urls import path,include
 from .views import * 
 from rest_framework.routers import DefaultRouter
 from .views import ProductViewSet
+from orders.views import * 
 router = DefaultRouter()
 router.register(r'products-filter', ProductViewSet) 
 
@@ -20,6 +21,10 @@ urlpatterns = [
     
     path('main-category',GetCategoriesWithSubCategoriesAPI.as_view()),
     path('subcategory-products',ProductsListWithSubcategoriesAPI.as_view()),
+    
+    path('cart',CartAPI.as_view()),
+    path('cart/<str:pk>',CartAPI.as_view()),
+    
     path('', include(router.urls)),
     
 ]

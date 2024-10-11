@@ -9,7 +9,7 @@ class InventorySerializer1(serializers.ModelSerializer):
     store   = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = Inventory
-        fields = ('product','store','stock','last_updated')
+        fields = ('id','product','store','stock','last_updated')
     
     def get_product(self,obj):
         if obj.product :

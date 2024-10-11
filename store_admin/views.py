@@ -11,6 +11,10 @@ from rest_framework.views import APIView
 from products.models import * 
 from products.serializers import * 
 from .serializers import *
+from django.db import transaction
+import json
+
+
 
 class StoreProductAPI(GenericMethodsMixin,APIView):
     model            = Product
@@ -41,16 +45,59 @@ class StoreAPI(GenericMethodsMixin,APIView):
         try : 
            if pk in ["0", None]:
                data = Store.objects.filter(store_admin=request.thisUser.id)
-               response = paginate_data(Store, StoreSerializer, request,data)
+               response = paginate_data(Store, StorePinSerializer, request,data)
                return Response(response,status=status.HTTP_200_OK)
            else : 
                data = Store.objects.get(id=pk)
-               serializer = StoreSerializer(data)
+               serializer = StorePinSerializer(data)
                return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
     
-    
+    def post(self,request,*args,**kwargs):
+        with transaction.atomic():
+            try : 
+                pincode_list = request.data.get('pincode_list', '[]')
+                pincode_list = json.loads(pincode_list)
+                print("uploaded_pins",pincode_list)
+                request.POST._mutable = True
+                request.data['store_admin'] = request.thisUser.id
+                serializer = StoreSerializer(data=request.data)
+                if serializer.is_valid():
+                    store = serializer.save()
+                    pin_list = [StorePincode(pincode=pin,store=store) for pin in pincode_list]
+                    StorePincode.objects.bulk_create(pin_list)
+                    serializer = StorePinSerializer(store)
+                    return Response({"error" : False, "data" : serializer.data},status=status.HTTP_201_CREATED)
+                return Response({"error" : True , "errors" : serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e :
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+            
+    def put(self,request,pk=None,*args,**kwargs):
+        with transaction.atomic():
+            try : 
+                
+                store_object = Store.objects.get(id=pk)
+                
+                pincode_list = request.data.get('pincode_list', '[]')
+                pincode_list = json.loads(pincode_list)
+                print("uploaded_pins",pincode_list)
+                request.POST._mutable = True
+                serializer = StoreSerializer(store_object,data=request.data,partial=True)
+                if serializer.is_valid():
+                    store = serializer.save()
+                    if pincode_list : 
+                        data = StorePincode.objects.filter(store=store)
+                        data.delete()
+                        pin_list = [StorePincode(pincode=pin,store=store) for pin in pincode_list]
+                        StorePincode.objects.bulk_create(pin_list)
+                    serializer = StorePinSerializer(store)
+                    return Response({"error" : False, "data" : serializer.data},status=status.HTTP_201_CREATED)
+                return Response({"error" : True , "errors" : serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e :
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
 class StoreInventoryAPI(GenericMethodsMixin,APIView):
     model = Inventory
     serializer_class = InventorySerializer
@@ -60,6 +107,7 @@ class StoreInventoryAPI(GenericMethodsMixin,APIView):
         try : 
            if pk in ["0", None]:
                data = Inventory.objects.filter(store__store_admin=request.thisUser.id)
+               print(len(data),"--------------------",request.thisUser.id)
                response = paginate_data(Inventory, InventorySerializer1, request,data)
                return Response(response,status=status.HTTP_200_OK)
            else : 

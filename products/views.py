@@ -61,3 +61,4 @@ class AddStoreAPI(GenericMethodsMixin,APIView):
                 return Response({"error" : True , "errors" : serializer.errors},status=status.HTTP_400_BAD_REQUEST)
             except Exception as e :
                 return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+

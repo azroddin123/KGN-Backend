@@ -2,6 +2,8 @@ from django.db import models
 from portals.models import BaseModel
 import os 
 from accounts.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Category(BaseModel):
     category_name        = models.CharField(max_length=128)
@@ -34,7 +36,7 @@ class SubCategory(BaseModel):
 
 
 class Store(BaseModel):
-    store_admin    = models.ForeignKey(User,on_delete=models.CASCADE) 
+    store_admin    = models.OneToOneField(User,on_delete=models.CASCADE) 
     store_name     = models.CharField(max_length=256,default="Store 1")
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     store_image    = models.ImageField(upload_to="stores/",null=True,blank=True)
@@ -50,7 +52,7 @@ class StorePincode(models.Model):
         return f"{self.store.store_name} - {self.pincode}"
     
 class Product(BaseModel):
-    product_name         = models.CharField(max_length=128)
+    product_name         = models.CharField(max_length=128,unique=True)
     sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,related_name="products",null=True,blank=True)
     product_image        = models.ImageField(upload_to="product/",null=True,blank=True)
     price                = models.PositiveIntegerField()
@@ -76,3 +78,13 @@ class Inventory(models.Model):
 
     def __str__(self):
         return f"{self.product.product_name} - {self.store.store_name} (Stock: {self.stock})"
+    
+@receiver(post_save, sender=Store)
+def add_products_to_inventory(sender, instance, created, **kwargs):
+    if created:
+        products = Product.objects.all()
+        for product in products:
+            Inventory.objects.create(store=instance, product=product, stock=0)
+
+
+

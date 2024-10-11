@@ -16,4 +16,8 @@ urlpatterns = [
     
     path('add-cart',AddItemToCartAPI.as_view()),
     
+    
+    path('my-cart',CustomerCartItemAPI.as_view()),
+    path('my-cart/<str:pk>',CustomerCartItemAPI.as_view())
+    
 ]
