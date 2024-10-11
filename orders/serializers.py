@@ -17,13 +17,20 @@ class CartItemSerializer(ModelSerializer):
 
 class CartItemSerializer1(ModelSerializer):
     product = serializers.SerializerMethodField(read_only=True)
+    product_image = serializers.SerializerMethodField(read_only=True)
+    
     class Meta :
         model = CartItem
-        fields = ('id','product','quantity',)
+        fields = ('id','product','product_image','quantity',)
         
     def get_product(self,obj):
         if obj.product :
             return obj.product.product_name
+        return None
+    
+    def get_product_image(self,obj):
+        if obj.product :
+            return obj.product.product_image
         return None
         
 
