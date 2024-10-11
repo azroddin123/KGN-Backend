@@ -28,10 +28,14 @@ class CartItemSerializer1(ModelSerializer):
             return obj.product.product_name
         return None
     
-    def get_product_image(self,obj):
-        if obj.product :
-            return obj.product.product_image
+    def get_product_image(self, obj):
+        if obj.product and obj.product.product_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.product.product_image.url)
+            return obj.product.product_image.url
         return None
+
         
 
 class OrdersSerializer(ModelSerializer):
