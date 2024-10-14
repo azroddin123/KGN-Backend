@@ -11,7 +11,7 @@ class InventorySerializer1(serializers.ModelSerializer):
     
     class Meta :
         model  = Inventory
-        fields = ('id','product','store','stock','last_updated')
+        fields = ('id','product','store','stock','last_updated','product_image')
     
     def get_product(self,obj):
         if obj.product :
