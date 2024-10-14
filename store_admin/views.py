@@ -107,7 +107,6 @@ class StoreInventoryAPI(GenericMethodsMixin,APIView):
         try : 
            if pk in ["0", None]:
                data = Inventory.objects.filter(store__store_admin=request.thisUser.id)
-               print(len(data),"--------------------",request.thisUser.id)
                response = paginate_data(Inventory, InventorySerializer1, request,data)
                return Response(response,status=status.HTTP_200_OK)
            else : 

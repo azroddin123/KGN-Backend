@@ -12,6 +12,22 @@ class PriceChoices(models.TextChoices):
     INTERMEDIATE     = INTERMEDIATE,INTERMEDIATE
     PRO              = PRO,PRO
 
+
+class OrderChoices(models.TextChoices):
+    PENDING          = PENDING,PENDING
+    CONFIRMED        = CONFIRMED,CONFIRMED
+    PREPARING        = PREPARING,PREPARING
+    OUT_FOR_DELIVERY = OUT_FOR_DELIVERY,OUT_FOR_DELIVERY
+    DELIVERED        = DELIVERED,DELIVERED
+    CANCELLED        = CANCELLED,CANCELLED
+    
+class PaymentStatusChoices(models.TextChoices):
+    PAID            = PAID,PAID
+    UNPAID          = UNPAID,UNPAID
+    FAILED          = FAILED,FAILED
+    REFUNDED        = REFUNDED,REFUNDED
+    
+    
 class BookingChoices(models.TextChoices):
     PENDING          = PENDING,PENDING
     APPROVED         = APPROVED,APPROVED

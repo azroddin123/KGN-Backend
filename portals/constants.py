@@ -26,5 +26,18 @@ REFUNDED         = "Refunded"
 
 
 
-# Service Choices 
+# Order Status CHoices
+PENDING = 'Pending'
+CONFIRMED = 'Confirmed'
+PREPARING = 'Preparing'
+OUT_FOR_DELIVERY = 'Out for Delivery'
+DELIVERED = 'Delivered'
+CANCELLED = 'Cancelled'
+
+# Payment Choices 
+
+PAID = 'Paid'
+UNPAID = 'Unpaid'
+FAILED = 'Failed'
+REFUNDED = 'Refunded'
 
