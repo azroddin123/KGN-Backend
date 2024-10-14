@@ -36,8 +36,6 @@ class CartItemSerializer1(ModelSerializer):
             return obj.product.product_image.url
         return None
 
-        
-
 class OrdersSerializer(ModelSerializer):
     class Meta : 
         model = Orders
