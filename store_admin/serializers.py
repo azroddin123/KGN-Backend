@@ -11,7 +11,7 @@ class InventorySerializer1(serializers.ModelSerializer):
     
     class Meta :
         model  = Inventory
-        fields = ('id','product','store','stock','last_updated','product_name','store_name','product_image')
+        fields = ('id','product','store','stock','last_updated','product_name','store_name','product_image','product_price')
     
     def get_product_name(self,obj):
         if obj.product :
@@ -29,6 +29,11 @@ class InventorySerializer1(serializers.ModelSerializer):
             if request:
                 return request.build_absolute_uri(obj.product.product_image.url)
             return obj.product.product_image.url
+        return None
+    
+    def get_product_price(self,obj):
+        if obj.product :
+            return obj.product.price
         return None
         
             
