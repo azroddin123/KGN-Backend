@@ -16,15 +16,15 @@ class CartItemSerializer(ModelSerializer):
 
 
 class CartItemSerializer1(ModelSerializer):
-    product = serializers.SerializerMethodField(read_only=True)
-    product_image = serializers.SerializerMethodField(read_only=True)
+    product_name   = serializers.SerializerMethodField(read_only=True)
+    product_image  = serializers.SerializerMethodField(read_only=True)
     product_price  = serializers.SerializerMethodField(read_only=True)
     
     class Meta :
         model = CartItem
-        fields = ('id','product','product_image','quantity','product_price')
+        fields = ('id','product','product_name','product_image','quantity','product_price')
         
-    def get_product(self,obj):
+    def get_product_name(self,obj):
         if obj.product :
             return obj.product.product_name
         return None
@@ -56,11 +56,11 @@ class OrderedItemSerializer(ModelSerializer):
         
 
 class CartWithProductsSerializer(ModelSerializer):
-    cart = CartItemSerializer1(many=True,read_only=True)
+    cart_items = CartItemSerializer1(many=True,read_only=True)
     user = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model = Cart
-        fields = ('id','user','total_price','cart')
+        fields = ('id','user','total_price','cart_items')
         
     def get_user(self,obj):
         if obj.user:

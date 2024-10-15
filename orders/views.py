@@ -128,16 +128,20 @@ class CustomerCartItemAPI(GenericMethodsMixin,APIView):
 
 
 class PlaceOrderAPI(APIView):
-        
     def post(self,request,*args,**kwargs):
         try : 
             with transaction.atomic() : 
                 cart = Cart.objects.get(user=request.thisUser.id)
                 request.POST._mutable = True
-                
                 serializer = OrdersSerializer(data=request.data)
                 if serializer.is_valid():
-                    serializer.save()
+                    order = serializer.save()
+                    for cart in cart.cart_item.all() :
+                        OrderedItems.objects.create(
+                            order = order,
+                            product = cart.product,
+                            quantity = cart.quantity
+                        )
                     return Response({"data" : serializer.data},status=status.HTTP_200_OK)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
