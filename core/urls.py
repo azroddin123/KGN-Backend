@@ -40,6 +40,6 @@ if settings.DEBUG:
 
 
 from django.contrib import admin
-admin.site.site_header  = 'KGN Express'                          
-admin.site.index_title  = 'KGN Express'                 
-admin.site.site_title   = 'KGN Express'
+admin.site.site_header  = 'Meat Window'                          
+admin.site.index_title  = 'Meat Window'                 
+admin.site.site_title   = 'Meat Window'
