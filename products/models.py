@@ -21,7 +21,7 @@ class Category(BaseModel):
 
 class SubCategory(BaseModel):
     name                  = models.CharField(max_length=258)
-    category              = models.ForeignKey(Category,on_delete=models.CASCADE,related_name="subcategory",null=True,blank=True)
+    category              = models.ForeignKey(Category,on_delete=models.SET_NULL,related_name="subcategory",null=True,blank=True)
     category_image        = models.ImageField(upload_to="sub_category/",null=True,blank=True)
     description           = models.TextField(null=True,blank=True)
 
@@ -53,7 +53,7 @@ class StorePincode(models.Model):
     
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128,unique=True)
-    sub_category         = models.ForeignKey(SubCategory,on_delete=models.CASCADE,related_name="products",null=True,blank=True)
+    sub_category         = models.ForeignKey(SubCategory,on_delete=models.SET_NULL,related_name="products",null=True,blank=True)
     product_image        = models.ImageField(upload_to="product/",null=True,blank=True)
     price                = models.PositiveIntegerField()
     description          = models.TextField(null=True,blank=True)
