@@ -4,7 +4,7 @@ from .managers import UserManager
 import uuid
 from portals.choices import UserChoices
 # Create your models here.
-
+from products.models import StorePincode
 import os 
 class User(AbstractBaseUser):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
@@ -26,7 +26,7 @@ class User(AbstractBaseUser):
     pincode          = models.CharField(max_length=6,default="413512")
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
-    
+    store_pincode    = models.OneToOneField(StorePincode, on_delete=models.SET_NULL, null=True, blank=True)  # One user, one store pincode
     USERNAME_FIELD = 'username'
     def __str__(self):
         return self.email

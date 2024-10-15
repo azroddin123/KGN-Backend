@@ -1,7 +1,7 @@
 from django.db import models
 from portals.models import BaseModel
 import os 
-from accounts.models import User
+# from accounts.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
@@ -36,7 +36,7 @@ class SubCategory(BaseModel):
 
 
 class Store(BaseModel):
-    store_admin    = models.OneToOneField(User,on_delete=models.CASCADE) 
+    store_admin    = models.OneToOneField("accounts.User",on_delete=models.CASCADE) 
     store_name     = models.CharField(max_length=256,default="Store 1")
     store_address  = models.CharField(max_length=256,null=True,blank=True)
     store_image    = models.ImageField(upload_to="stores/",null=True,blank=True)
@@ -49,7 +49,7 @@ class StorePincode(models.Model):
     store   = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='pincodes')
     pincode = models.CharField(max_length=6)  
     def __str__(self):
-        return f"{self.store.store_name} - {self.pincode}"
+        return self.pincode
     
 class Product(BaseModel):
     product_name         = models.CharField(max_length=128,unique=True)
@@ -85,6 +85,8 @@ def add_products_to_inventory(sender, instance, created, **kwargs):
         products = Product.objects.all()
         for product in products:
             Inventory.objects.create(store=instance, product=product, stock=0)
+
+
 
 
 

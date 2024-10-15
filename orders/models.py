@@ -34,15 +34,14 @@ class CartItem(BaseModel):
 
 class Orders(BaseModel):
     user              = models.ForeignKey(User, on_delete=models.CASCADE)
-    cart              = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    amount            = models.FloatField(default=0)
+    amount            = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
 
-    is_paid           = models.CharField(max_length=100, null=True,blank=True)
+    is_paid           = models.BooleanField(default=False)
     order_id          = models.CharField(max_length=100, null=True,blank=True)
     payment_id        = models.CharField(max_length=100, null=True,blank=True)
     payment_status    = models.CharField(max_length=100, null=True,blank=True)
     
-    # order_status      = models.CharField(max_length=20, choices=OrderChoices, default=OrderChoices.PENDING)
+    order_status      = models.CharField(max_length=20, choices=OrderChoices.choices, default=OrderChoices.PENDING)
     delivery_boy      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,related_name="delivery_boy")
     store_id          = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True,blank=True)
     

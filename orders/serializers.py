@@ -54,14 +54,13 @@ class OrderedItemSerializer(ModelSerializer):
         fields = "__all__"
         
         
-
 class CartWithProductsSerializer(ModelSerializer):
     cart_items = CartItemSerializer1(many=True,read_only=True)
     user = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model = Cart
         fields = ('id','user','total_price','cart_items')
-        
+
     def get_user(self,obj):
         if obj.user:
             return obj.user.username

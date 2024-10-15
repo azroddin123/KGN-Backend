@@ -118,8 +118,9 @@ class CustomerCartItemAPI(GenericMethodsMixin,APIView):
             request.data['cart'] = cart.id
             serializer = CartItemSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
-                return Response({"data" : serializer.data},status=status.HTTP_200_OK)
+                data = serializer.save()
+                serializer_data = CartItemSerializer1(data)
+                return Response({"data" : serializer_data.data},status=status.HTTP_200_OK)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
@@ -132,17 +133,29 @@ class PlaceOrderAPI(APIView):
         try : 
             with transaction.atomic() : 
                 cart = Cart.objects.get(user=request.thisUser.id)
+                print(request)
+                store_pincodes = StorePincode.objects.filter(pincode=request.thisUser.store_pincode).prefetch_related('store')
                 request.POST._mutable = True
-                serializer = OrdersSerializer(data=request.data)
+                request.data['store_id'] = store_pincodes.first().store.id
+                request.data['user']  = request.thisUser.id
+                request.data['cart']  = cart
+                serializer     = OrdersSerializer(data=request.data)
                 if serializer.is_valid():
                     order = serializer.save()
-                    for cart in cart.cart_item.all() :
+                    for cart in cart.cart_items.all() :
                         OrderedItems.objects.create(
                             order = order,
                             product = cart.product,
                             quantity = cart.quantity
                         )
+                        print("order placed..................")
                     return Response({"data" : serializer.data},status=status.HTTP_200_OK)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+store_pincode = StorePincode.objects.select_related('store').filter(pincode=413512).first()
+if store_pincode:
+    print(store_pincode.store.id,"-------------------")
