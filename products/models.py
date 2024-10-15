@@ -84,7 +84,7 @@ def add_products_to_inventory(sender, instance, created, **kwargs):
     if created:
         products = Product.objects.all()
         for product in products:
-            Inventory.objects.create(store=instance, product=product, stock=0)
+            Inventory.objects.create(store=instance, product=product, stock=100)
 
 
 

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.db.models import F
 from django.db import transaction
 from orders.serializers import * 
 from orders.models import * 
@@ -124,8 +124,6 @@ class CustomerCartItemAPI(GenericMethodsMixin,APIView):
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-            
-        
 
 
 class PlaceOrderAPI(APIView):
@@ -148,14 +146,100 @@ class PlaceOrderAPI(APIView):
                             product = cart.product,
                             quantity = cart.quantity
                         )
-                        print("order placed..................")
+                        product_obj = Inventory.objects.filter(store=store_pincodes.first().store.id,product=cart.product)
+                        product_obj.update(stock=F('stock') - cart.quantity)
                     return Response({"data" : serializer.data},status=status.HTTP_200_OK)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+from rest_framework.exceptions import ValidationError
+class PlaceOrderAPI1(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                
+                # Fetch cart for the user
+                cart = Cart.objects.prefetch_related('cart_items__product').get(user=request.thisUser.id)
+
+                # Check if the cart has any items
+                if not cart.cart_items.exists():
+                    return Response({"error": True, "message": "Please Add Product in the cart First"}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Fetch store based on user's pincode
+                store_pincode = StorePincode.objects.prefetch_related('store').filter(pincode=request.thisUser.store_pincode).first()
+
+                # If no store matches the pincode
+                if not store_pincode:
+                    return Response({"error": True, "message": "No store available for the given pincode."}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Prepare data for order creation
+                request.POST._mutable = True
+                request.data.update({
+                    'store_id': store_pincode.store.id,
+                    'user': request.thisUser.id,
+                    'cart': cart.id
+                })
+
+                # Serialize order data
+                serializer = OrdersSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                order = serializer.save()
+
+                # Iterate over cart items and create OrderedItems
+                ordered_items = [
+                    OrderedItems(
+                        order=order,
+                        product=item.product,
+                        quantity=item.quantity
+                    )
+                    for item in cart.cart_items.all()
+                ]
+                OrderedItems.objects.bulk_create(ordered_items)
+
+                # Update inventory in bulk for the store
+                inventory_updates = []
+                for item in cart.cart_items.all():
+                    inventory_updates.append(
+                        Inventory.objects.filter(store=store_pincode.store, product=item.product).update(
+                            stock=F('stock') - item.quantity
+                        )
+                    )
+                # Clear cart items once the order is placed
+                cart.cart_items.all().delete()
+                return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+
+        except Cart.DoesNotExist:
+            return Response({"error": True, "message": "Cart not found for this user."}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError as ve:
+            return Response({"error": True, "message": ve.detail}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClearCartAPI(APIView):
+     def get(self,request,pk=None,*args,**kwargs):
+            # Fetch cart for the user
+            cart = Cart.objects.prefetch_related('cart_items__product').get(user=request.thisUser.id)
+              # Check if the cart has any items
+            if not cart.cart_items.exists():
+                return Response({"error": True, "message": "Please Add Product in the cart First"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Cart, CartItem
+from django.shortcuts import get_object_or_404
+
+class DeleteCartItemsView(APIView):
+    def delete(self, request, *args, **kwargs):
+        user = request.user
         
-
-
-store_pincode = StorePincode.objects.select_related('store').filter(pincode=413512).first()
-if store_pincode:
-    print(store_pincode.store.id,"-------------------")
+        # Get the user's cart
+        cart = get_object_or_404(Cart, user=user)
+        
+        # Delete all CartItems related to the user's cart
+        CartItem.objects.filter(cart=cart).delete()
+        
+        return Response({"message": "All cart items deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

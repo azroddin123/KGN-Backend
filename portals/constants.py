@@ -10,8 +10,6 @@ DELIVERY_MAN       = "Delivery_man"
 STORE_ADMIN        = "Store_admin"
 
 
-
-
 # Booking Choices 
 PENDING          = "Pending"
 APPROVED         = "Approved"

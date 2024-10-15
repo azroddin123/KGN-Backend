@@ -18,7 +18,6 @@ class ProductFilter(filters.FilterSet):
         model = Product
         fields = ('product_name', 'sub_category', 'price', 'description')
 
-
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -102,3 +101,4 @@ class AddProductToCartAPI(APIView):
             pass
         except Exception as e:
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
