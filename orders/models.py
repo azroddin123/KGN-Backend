@@ -28,14 +28,12 @@ class CartItem(BaseModel):
     class Meta:
         unique_together = ('cart', 'product')
 
-
-   
-    
-
 class Orders(BaseModel):
     user              = models.ForeignKey(User, on_delete=models.CASCADE)
     amount            = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
-
+    name              = models.CharField(max_length=128,null=True,blank=True)
+    city              = models.CharField(max_length=128,null=True,blank=True)
+    mobile_number     = models.CharField(max_length=10,null=True,blank=True)
     is_paid           = models.BooleanField(default=False)
     order_id          = models.CharField(max_length=100, null=True,blank=True)
     payment_id        = models.CharField(max_length=100, null=True,blank=True)
@@ -45,13 +43,42 @@ class Orders(BaseModel):
     delivery_boy      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,related_name="delivery_boy")
     store_id          = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True,blank=True)
     
+    payment_type      = models.CharField(max_length=128,default="COD")
     delivery_address  = models.TextField()
-    delivery_cost     = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    delivery_cost     = models.DecimalField(max_digits=8, decimal_places=2, default=50.00)
     delivery_time     = models.DateTimeField(null=True, blank=True)
     pincode           = models.CharField(max_length=10,null=True,blank=True)
-    
+    notes             = models.TextField(null=True,blank=True)  
 
 class OrderedItems(BaseModel):
-    order     = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    order     = models.ForeignKey(Orders, on_delete=models.CASCADE,related_name="ordered_items")
     product   = models.ForeignKey(Product, on_delete=models.CASCADE,null=True,blank=True)
     quantity  = models.IntegerField(default=0)
+
+
+class Invoice(BaseModel):
+    booking        = models.OneToOneField(Orders, on_delete=models.CASCADE, related_name='invoice')
+    invoice_number = models.CharField(max_length=100, unique=True)
+    invoice_date   = models.DateField(auto_now_add=True)
+    due_date       = models.DateField()
+    total_amount   = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=50,default="CASH")
+    transaction_id = models.CharField(max_length=100, unique=True,null=True,blank=True)
+    payment_status = models.CharField(max_length=50, choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed'),("FAILED","Failed")], default='PENDING')
+    notes          = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-invoice_date']
+
+    def save(self, *args, **kwargs):
+        # Auto-generate invoice number if not set
+        if not self.invoice_number:
+            last_invoice = Invoice.objects.order_by('created_on').last()
+            if last_invoice:
+                print(last_invoice,"last_invoice----------")
+                # Extract the number part from the last invoice_number and increment it
+                last_invoice_number = int(last_invoice.invoice_number.replace('INV', ''))
+                self.invoice_number = f'INV{last_invoice_number + 1:04d}'
+            else:
+                self.invoice_number = 'INV0001'
+        super().save(*args, **kwargs)

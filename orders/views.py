@@ -74,7 +74,7 @@ class OrdersAPI(GenericMethodsMixin,APIView):
     
 class OrderedItemAPI(GenericMethodsMixin,APIView):
     model            = OrderedItems
-    serializer_class = OrderedItemSerializer
+    serializer_class = OrderedItemSerializer1
     lookup_field     = "id"
 
 
@@ -243,3 +243,185 @@ class DeleteCartItemsView(APIView):
         CartItem.objects.filter(cart=cart).delete()
         
         return Response({"message": "All cart items deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
+from phonepe.sdk.pg.env import Env
+from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
+import uuid
+
+
+TEST_MERCHANT_ID = "PGTESTPAYUAT100"
+TEST_SALT_KEY    = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"   
+TEST_SALT_INDEX  = 1 
+REDIRECT_URL     ="http://139.59.2.27:4000"
+TEST_ENV         = "Env.UAT"
+
+
+class OrderPaymentAPI(APIView):
+     def post(self, request, *args, **kwargs):
+        with transaction.atomic():
+            try:
+                # Fetch cart for the user
+                cart = Cart.objects.prefetch_related('cart_items__product').get(user=request.thisUser.id)
+
+                # Check if the cart has any items
+                if not cart.cart_items.exists():
+                    return Response({"error": True, "message": "Please Add Product in the cart First"}, status=status.HTTP_400_BAD_REQUEST)
+                print("-----------",request.thisUser)
+                # Fetch store based on user's pincode
+                store_pincode = StorePincode.objects.prefetch_related('store').filter(pincode=request.thisUser.store_pincode).first()
+
+                print(store_pincode,"-----------------")
+                # If no store matches the pincode
+                if not store_pincode:
+                    return Response({"error": True, "message": "No store available for the given pincode."}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Prepare data for order creation
+                request.POST._mutable = True
+                request.data.update({
+                    'store_id': store_pincode.store.id,
+                    'user': request.thisUser.id,
+                    'cart': cart.id
+                })
+                
+                
+                payment_type = request.data.get('payment_type')
+                
+                
+                if payment_type == "UPI" :
+                    merchant_id = TEST_MERCHANT_ID
+                    salt_key = TEST_SALT_KEY  
+                    salt_index = TEST_SALT_INDEX
+                    env = TEST_ENV
+                    phonepe_client = PhonePePaymentClient(
+                        merchant_id=merchant_id,
+                        salt_key=salt_key,
+                        salt_index=salt_index,
+                        env=env
+                    )
+                    # Generate unique transaction ID and URLs
+                    unique_transaction_id = str(uuid.uuid4())[:-2]
+                    print(unique_transaction_id)
+                    ui_redirect_url =REDIRECT_URL
+                    s2s_callback_url = REDIRECT_URL
+
+                    # Validate and convert amount
+                    amount = int(request.data.get('amount', 0)) * 100
+                    if amount <= 0:
+                        return Response({'error': True, 'message': "amount should be greater than zero"}, status=status.HTTP_400_BAD_REQUEST)
+                    request.POST._mutable = True
+                    serializer = OrdersSerializer(data=request.data)
+                    if serializer.is_valid():
+                        order = serializer.save()
+                        
+                        
+                           # Iterate over cart items and create OrderedItems
+                        ordered_items = [
+                            OrderedItems(
+                                order=order,
+                                product=item.product,
+                                quantity=item.quantity
+                            )
+                            for item in cart.cart_items.all()
+                        ]
+                        OrderedItems.objects.bulk_create(ordered_items)
+
+                        # Update inventory in bulk for the store
+                        inventory_updates = []
+                        for item in cart.cart_items.all():
+                            inventory_updates.append(
+                                Inventory.objects.filter(store=store_pincode.store, product=item.product).update(
+                                    stock=F('stock') - item.quantity
+                                )
+                            )
+                        # Clear cart items once the order is placed
+                        cart.cart_items.all().delete()
+                        
+                        # Create PgPayRequest
+                        id_assigned_to_user_by_merchant = TEST_MERCHANT_ID
+                        pay_page_request = PgPayRequest.pay_page_pay_request_builder(
+                            merchant_transaction_id=unique_transaction_id,
+                            amount=amount,
+                            merchant_user_id=id_assigned_to_user_by_merchant,
+                            callback_url=REDIRECT_URL,
+                            redirect_url=REDIRECT_URL,
+                        )
+
+                        # Send payment request and get the response URL
+                        pay_page_response = phonepe_client.pay(pay_page_request)
+                        pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+                        # Start payment status checking timer
+                        # threading.Timer(360, check_payment_status, args=[unique_transaction_id]).start()
+                        return Response({
+                            "error": False,
+                            "data": serializer.data,
+                            'pay_page_url': pay_page_url,
+                            "transaction_id": unique_transaction_id
+                        }, status=status.HTTP_201_CREATED)
+                    else:
+                        # Collect and return serializer errors
+                        error_list = [serializer.errors[error][0] for error in serializer.errors]
+                        return Response({"error": True, "message": error_list}, status=status.HTTP_400_BAD_REQUEST)
+            
+                else :
+                    unique_transaction_id = str(uuid.uuid4())[:-2]
+                    print("unique transaction id -------> ",unique_transaction_id)
+                    serializer = OrdersSerializer(data=request.data)
+                    if serializer.is_valid():
+                        order = serializer.save()
+                        ordered_items = [
+                            OrderedItems(
+                                order=order,
+                                product=item.product,
+                                quantity=item.quantity
+                            )
+                            for item in cart.cart_items.all()
+                        ]
+                        OrderedItems.objects.bulk_create(ordered_items)
+
+                        # Update inventory in bulk for the store
+                        inventory_updates = []
+                        for item in cart.cart_items.all():
+                            inventory_updates.append(
+                                Inventory.objects.filter(store=store_pincode.store, product=item.product).update(
+                                    stock=F('stock') - item.quantity
+                                )
+                            )
+                        # Clear cart items once the order is placed
+                        cart.cart_items.all().delete()
+                        return Response({
+                            "error": False,
+                            "data": serializer.data,
+                            "transaction_id": unique_transaction_id
+                        }, status=status.HTTP_201_CREATED)
+                    else:
+                        # Collect and return serializer errors
+                        error_list = [serializer.errors[error][0] for error in serializer.errors]
+                        return Response({"error": True, "message": error_list}, status=status.HTTP_400_BAD_REQUEST)
+            except ValueError as e:
+                return Response({'error': True, 'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({'error': True, 'message': 'An unexpected error occurred: ' + str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+ 
+class CustomerOrdersAPI(GenericMethodsMixin,APIView):
+    model = Orders
+    serializer_class = OrdersSerializer
+    lookup_field ="id"  
+    
+    def get(self,request,pk=None,*args,**kwargs):
+        try : 
+           if pk in ["0", None]:
+               data = Orders.objects.filter(user=request.thisUser.id)
+               print("len-data",data)
+               response = paginate_data(Orders, OrderWithOrderedItemSerializer, request,data)
+               return Response(response,status=status.HTTP_200_OK)
+           else : 
+               data = Orders.objects.get(id=pk,user=request.thisUser.id)
+               serializer = OrderWithOrderedItemSerializer(data)
+               return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+    

@@ -21,8 +21,14 @@ urlpatterns = [
     path('store',StoreAPI.as_view()),
     path('store/<str:pk>',StoreAPI.as_view()),
     
+    path('orders',StoreOrdersAPI.as_view()),
+    path('orders/<str:pk>',StoreOrdersAPI.as_view()),
+    
     
     path('add-store',AddStoreAPI.as_view()),
     path('add-store/<str:pk>',AddStoreAPI.as_view()),
+    
+    
+    
       
 ]

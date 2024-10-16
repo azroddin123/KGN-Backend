@@ -53,7 +53,8 @@ class OrderedItemSerializer(ModelSerializer):
         model = OrderedItems
         fields = "__all__"
         
-        
+
+             
 class CartWithProductsSerializer(ModelSerializer):
     cart_items = CartItemSerializer1(many=True,read_only=True)
     user = serializers.SerializerMethodField(read_only=True)
@@ -65,3 +66,35 @@ class CartWithProductsSerializer(ModelSerializer):
         if obj.user:
             return obj.user.username
         return None
+    
+class OrderedItemSerializer1(ModelSerializer):
+    product_name  = serializers.SerializerMethodField(read_only=True)
+    product_image  = serializers.SerializerMethodField(read_only=True)
+    product_price  = serializers.SerializerMethodField(read_only=True)
+    class Meta :
+        model = OrderedItems
+        fields = ('product','quantity','product_name','product_price','product_image')
+        
+    def get_product_name(self,obj):
+            if obj.product :
+                return obj.product.product_name
+            return None
+    
+    def get_product_price(self,obj):
+        if obj.product :
+            return obj.product.price
+        return None
+        
+    def get_product_image(self, obj):
+        if obj.product and obj.product.product_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.product.product_image.url)
+            return obj.product.product_image.url
+        return None
+
+class OrderWithOrderedItemSerializer(ModelSerializer):
+    ordered_items = OrderedItemSerializer1(many=True)
+    class Meta :
+        model = Orders
+        fields = ('id','user','name','mobile_number','city','notes','amount', 'is_paid', 'order_id', 'payment_id', 'payment_status', 'order_status', 'delivery_boy', 'store_id', 'delivery_address', 'delivery_cost', 'delivery_time', 'pincode','ordered_items')

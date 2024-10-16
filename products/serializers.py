@@ -28,7 +28,7 @@ class CategorySubCategorySerializer(ModelSerializer):
     subcategory = SubCategorySerializer1(many=True,read_only=True)
     class Meta :
         model = Category
-        fields = ('category_name','category_description','category_image','subcategory')
+        fields = ('id','category_name','category_description','category_image','subcategory')
         
 
 
@@ -48,7 +48,7 @@ class ProductSubCategorySerializer(ModelSerializer):
     products = ProductSerializer(many=True,read_only=True)
     class Meta :
             model = SubCategory
-            fields = ('name','category','description','category_image','products')
+            fields = ('id','name','category','description','category_image','products')
             
             
 class InventorySerializer(ModelSerializer):

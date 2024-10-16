@@ -22,6 +22,9 @@ urlpatterns = [
     path('main-category',GetCategoriesWithSubCategoriesAPI.as_view()),
     path('subcategory-products',ProductsListWithSubcategoriesAPI.as_view()),
     
+    path('main-products',GetAllProductByMainCategoryAPI.as_view()),
+    
+    
     path('cart',CartAPI.as_view()),
     path('cart/<str:pk>',CartAPI.as_view()),
     

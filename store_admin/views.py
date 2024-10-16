@@ -10,6 +10,11 @@ from rest_framework.views import APIView
 
 from products.models import * 
 from products.serializers import * 
+
+from orders.models import * 
+from orders.serializers import * 
+
+
 from .serializers import *
 from django.db import transaction
 import json
@@ -117,4 +122,24 @@ class StoreInventoryAPI(GenericMethodsMixin,APIView):
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
     
     
+    
+class StoreOrdersAPI(GenericMethodsMixin,APIView):
+    model = Orders
+    serializer_class = OrdersSerializer
+    lookup_field ="id"  
+    
+    
+    def get(self,request,pk=None,*args,**kwargs):
+        try : 
+           if pk in ["0", None]:
+               data = Orders.objects.filter(store_id__store_admin=request.thisUser.id)
+               print("len-data",data)
+               response = paginate_data(Orders, OrderWithOrderedItemSerializer, request,data)
+               return Response(response,status=status.HTTP_200_OK)
+           else : 
+               data = Orders.objects.get(id=pk)
+               serializer = OrderWithOrderedItemSerializer(data)
+               return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
     

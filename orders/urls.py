@@ -15,9 +15,13 @@ urlpatterns = [
     path('order-items/<str:pk>',OrderedItemAPI.as_view()),
     
     path('add-cart',AddItemToCartAPI.as_view()),
-    path('place-order',PlaceOrderAPI1.as_view()),
+    path('place-order',OrderPaymentAPI.as_view()),
+    # path('order-payment',OrderPaymentAPI.as_view()),
     
     path('my-cart',CustomerCartItemAPI.as_view()),
-    path('my-cart/<str:pk>',CustomerCartItemAPI.as_view())
+    path('my-cart/<str:pk>',CustomerCartItemAPI.as_view()),
+    
+    path('my-orders',CustomerOrdersAPI.as_view()),
+    path('my-orders/<str:pk>',CustomerOrdersAPI.as_view())
     
 ]

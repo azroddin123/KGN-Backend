@@ -74,7 +74,6 @@ class GetAllProductsBySubCategoryAPI(APIView):
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
 
 
-
 class GetCategoriesWithSubCategoriesAPI(APIView):
     def get(self,request,pk=None,*args,**kwargs):
         try : 
@@ -102,3 +101,18 @@ class AddProductToCartAPI(APIView):
         except Exception as e:
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
 
+class GetAllProductByMainCategoryAPI(APIView):
+        def get(self, request, pk=None, *args, **kwargs):
+            try : 
+                if pk in ["0", None]:
+                    category = request.GET.get('category')
+                    if category is None : 
+                            data = Product.objects.all()
+                    else :
+                            print("0-------------")
+                            data = Product.objects.filter(sub_category__category=category)
+                            print(len(data))
+                    response = paginate_data(Product, ProductSerializer, request,data)
+                    return Response(response,status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
