@@ -112,16 +112,15 @@ class LoginAPI(APIView):
 class LoginWithUsernamePassword(APIView):
     def post(self,request,*args, **kwargs):
         try : 
-            username       = request.data.get('username')
+            email          = request.data.get('email')
             password       = request.data.get('password')
-            user           = User.objects.filter(username=username).first()
+            user           = User.objects.filter(email=email).first()
             if user is None : 
              return Response({"error" : False,"message" : "User Not Exists"},status=status.HTTP_400_BAD_REQUEST)
             token = generate_token(user.mobile_number)
             password_match = check_password(password,user.password)
             serializer = UserSerializer2(user)
             print(serializer.data,"------------------------")
-            # data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
                 return Response({"error" : False, "message" : "User logged in successfully",token : token , "data" : serializer.data},status=status.HTTP_200_OK)
             return Response({"error" : True, "message" : "Password is not Matched"},status=status.HTTP_400_BAD_REQUEST)
