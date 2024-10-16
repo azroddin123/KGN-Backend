@@ -8,7 +8,7 @@ class InventorySerializer1(serializers.ModelSerializer):
     product_name       = serializers.SerializerMethodField(read_only=True)
     store_name         = serializers.SerializerMethodField(read_only=True)
     product_image      = serializers.SerializerMethodField(read_only=True)
-    
+    product_price      = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = Inventory
         fields = ('id','product','store','stock','last_updated','product_name','store_name','product_image','product_price')
