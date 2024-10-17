@@ -110,6 +110,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': 'kgn_db',
+# 		'USER': 'root',
+# 		'PASSWORD': 'password',
+# 		'HOST':'localhost',
+# 		'PORT':'3306',
+# 	}
+# }
+
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }

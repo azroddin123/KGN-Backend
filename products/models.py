@@ -57,6 +57,9 @@ class Product(BaseModel):
     product_image        = models.ImageField(upload_to="product/",null=True,blank=True)
     price                = models.PositiveIntegerField()
     description          = models.TextField(null=True,blank=True)
+    no_of_pices          = models.CharField(max_length=10,null=True,blank=True)
+    weight               = models.CharField(max_length=128,null=True,blank=True)
+    serves               = models.CharField(max_length=128,null=True,blank=True)
     
     
     def __str__(self):

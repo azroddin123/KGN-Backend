@@ -34,6 +34,7 @@ class Orders(BaseModel):
     name              = models.CharField(max_length=128,null=True,blank=True)
     city              = models.CharField(max_length=128,null=True,blank=True)
     mobile_number     = models.CharField(max_length=10,null=True,blank=True)
+    notes             = models.TextField(null=True,blank=True)  
     is_paid           = models.BooleanField(default=False)
     order_id          = models.CharField(max_length=100, null=True,blank=True)
     payment_id        = models.CharField(max_length=100, null=True,blank=True)
@@ -48,7 +49,7 @@ class Orders(BaseModel):
     delivery_cost     = models.DecimalField(max_digits=8, decimal_places=2, default=50.00)
     delivery_time     = models.DateTimeField(null=True, blank=True)
     pincode           = models.CharField(max_length=10,null=True,blank=True)
-    notes             = models.TextField(null=True,blank=True)  
+
 
 class OrderedItems(BaseModel):
     order     = models.ForeignKey(Orders, on_delete=models.CASCADE,related_name="ordered_items")
