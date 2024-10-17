@@ -94,10 +94,10 @@ class OrderedItemSerializer1(ModelSerializer):
         return None
 
 class OrderWithOrderedItemSerializer(ModelSerializer):
-    # ordered_items = OrderedItemSerializer1(many=True)
+    ordered_items = OrderedItemSerializer1(many=True)
     class Meta :
         model = Orders
         fields = "__all__"
-        fields = ("id", "amount", "name", "city", "mobile_number", "notes", "is_paid", "order_id", "payment_id", "payment_status", "order_status", "payment_type", "delivery_address", "delivery_cost", "delivery_time", "pincode", "user", "delivery_boy", "store_id")
+        fields = ("id", "amount", "name", "city", "mobile_number", "notes", "is_paid", "order_id", "payment_id", "payment_status", "order_status", "payment_type", "delivery_address", "delivery_cost", "delivery_time", "pincode", "user", "delivery_boy", "store_id","ordered_items")
 
         # fields = ('id','user','name','mobile_number','city','notes','amount', 'is_paid', 'order_id', 'payment_id', 'order_status', 'delivery_boy', 'store_id', 'delivery_address', 'delivery_cost', 'delivery_time', 'pincode','ordered_items')
