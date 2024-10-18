@@ -154,6 +154,8 @@ class PlaceOrderAPI(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 from rest_framework.exceptions import ValidationError
+
+
 class PlaceOrderAPI1(APIView):
     def post(self, request, *args, **kwargs):
         try:
