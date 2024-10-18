@@ -122,7 +122,7 @@ class LoginWithUsernamePassword(APIView):
             serializer = UserSerializer2(user)
             print(serializer.data,"------------------------")
             if password == user.password  or password_match:
-                return Response({"error" : False, "message" : "User logged in successfully",token : token , "data" : serializer.data},status=status.HTTP_200_OK)
+                return Response({"error" : False, "message" : "User logged in successfully","token" : token , "data" : serializer.data},status=status.HTTP_200_OK)
             return Response({"error" : True, "message" : "Password is not Matched"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
