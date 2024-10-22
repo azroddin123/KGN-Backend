@@ -111,7 +111,7 @@ class StoreInventoryAPI(GenericMethodsMixin,APIView):
     def get(self,request,pk=None,*args,**kwargs):
         try : 
            if pk in ["0", None]:
-               data = Inventory.objects.filter(store__store_admin=request.thisUser.id)
+               data = Inventory.objects.filter(store__store_admin=request.thisUser.id).order_by('-created_on')
                response = paginate_data(Inventory, InventorySerializer1, request,data)
                return Response(response,status=status.HTTP_200_OK)
            else : 
@@ -130,16 +130,23 @@ class StoreOrdersAPI(GenericMethodsMixin,APIView):
     
     
     def get(self,request,pk=None,*args,**kwargs):
-        try : 
+        # try : 
            if pk in ["0", None]:
                data = Orders.objects.filter(store_id__store_admin=request.thisUser.id)
-               print("len-data",data)
+               print("len-data---------",data)
                response = paginate_data(Orders, OrderWithOrderedItemSerializer, request,data)
                return Response(response,status=status.HTTP_200_OK)
            else : 
                data = Orders.objects.get(id=pk)
                serializer = OrderWithOrderedItemSerializer(data)
                return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+        # except Exception as e:
+        #     return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
+
+
+# class AssignOrderAPI(APIView):
+#     def put(self,request,*args,**kwargs):
+        
+#         pass
     

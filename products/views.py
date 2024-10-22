@@ -35,8 +35,20 @@ class InventoryAPI(GenericMethodsMixin,APIView):
     model            = Inventory
     serializer_class = InventorySerializer
     lookup_field     = "id"
-  
-  
+
+
+class ReviewAPI(GenericMethodsMixin,APIView):
+    model = Review
+    serializer_class = ReviewSerializer
+    lookup_field     = "id"
+    
+
+class ContactAPI(GenericMethodsMixin,APIView):
+    model = Contact
+    serializer_class = ContactSerializer
+    lookup_field     = "id"
+    
+    
 import json  
 class AddStoreAPI(GenericMethodsMixin,APIView):
     model = Store

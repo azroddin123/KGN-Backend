@@ -47,7 +47,7 @@ class Store(BaseModel):
 
 class StorePincode(models.Model):
     store   = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='pincodes')
-    pincode = models.CharField(max_length=6)  
+    pincode = models.CharField(max_length=6,unique=True)  
     def __str__(self):
         return self.pincode
     
@@ -90,7 +90,23 @@ def add_products_to_inventory(sender, instance, created, **kwargs):
         for product in products:
             Inventory.objects.create(store=instance, product=product, stock=100)
 
+@receiver(post_save, sender=Product)
+def add_products_to_all_stores_inventory(sender, instance, created, **kwargs):
+    if created:
+        stores = Store.objects.all()
+        for store in stores:
+            Inventory.objects.create(store=store,product=instance, stock=100)
 
+class Review(BaseModel):
+    product     = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
+    name        = models.CharField(max_length=126,blank=True,null=True)
+    email       = models.CharField(max_length=126,blank=True,null=True)
+    description = models.TextField(blank=True,null=True)
+    rating      = models.IntegerField(default=3)
+    
 
-
-
+class Contact(BaseModel):
+    name         = models.CharField(max_length=126,blank=True,null=True)
+    email        = models.CharField(max_length=126,blank=True,null=True)
+    subject      = models.TextField(blank=True,null=True)
+    message      = models.TextField(null=True,blank=True)

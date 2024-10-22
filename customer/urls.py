@@ -1,5 +1,6 @@
 from django.urls import path,include
 from .views import * 
+from products.views import ReviewAPI
 from rest_framework.routers import DefaultRouter
 from .views import ProductViewSet
 from orders.views import * 
@@ -27,6 +28,10 @@ urlpatterns = [
     
     path('cart',CartAPI.as_view()),
     path('cart/<str:pk>',CartAPI.as_view()),
+    
+    
+    path('review',ReviewAPI.as_view()),
+    path('review/<str:pk>',ReviewAPI.as_view()),
     
     path('', include(router.urls)),
     

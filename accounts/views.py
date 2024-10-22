@@ -45,6 +45,15 @@ class RegisterUserApi(APIView):
             with transaction.atomic():
                 print(request.data)
                 mobile_number = request.data.get('mobile_number')
+                pincode   = request.data.get('pincode') 
+                sp = StorePincode.objects.filter(pincode=pincode).first()
+                print(sp,"----------------------------")
+                
+                if not sp:
+                    return Response(
+                        {"error": True, "message": "We are currently not providing service in this area, but we will be launching soon"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
                 serializer = UserSerializer(data=request.data)
                 sms_otp   = randint(100000,999999)
                 request.POST._mutable = True
@@ -52,6 +61,7 @@ class RegisterUserApi(APIView):
                 otp = send_otp_to_phone(mobile_number,sms_otp) 
                 print(otp)
                 if  serializer.is_valid():
+                    print("valid")
                     user = serializer.save()
                     token = generate_token(user.mobile_number)
                     return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
@@ -94,6 +104,7 @@ class ResendOTPApi(APIView):
                 return Response({"error": False, "message": "OTP Sent successfully." , "sms-otp" : sms_otp}, status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
 
 class LoginAPI(APIView):
     def post(self,request,*args,**kwargs):

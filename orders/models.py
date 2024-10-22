@@ -34,10 +34,12 @@ class Orders(BaseModel):
     name              = models.CharField(max_length=128,null=True,blank=True)
     city              = models.CharField(max_length=128,null=True,blank=True)
     mobile_number     = models.CharField(max_length=10,null=True,blank=True)
-    notes             = models.TextField(null=True,blank=True)  
+    notes             = models.TextField(null=True,blank=True)
+    email             = models.EmailField(null=True,blank=True)
+    
     is_paid           = models.BooleanField(default=False)
     order_id          = models.CharField(max_length=100, null=True,blank=True)
-    payment_id        = models.CharField(max_length=100, null=True,blank=True)
+    transaction_id    = models.CharField(max_length=100, null=True,blank=True)
     payment_status    = models.CharField(max_length=100, null=True,blank=True)
     
     order_status      = models.CharField(max_length=20, choices=OrderChoices.choices, default=OrderChoices.PENDING)
@@ -49,6 +51,20 @@ class Orders(BaseModel):
     delivery_cost     = models.DecimalField(max_digits=8, decimal_places=2, default=50.00)
     delivery_time     = models.DateTimeField(null=True, blank=True)
     pincode           = models.CharField(max_length=10,null=True,blank=True)
+
+
+    def save(self, *args, **kwargs):
+        # Auto-generate invoice number if not set
+        if not self.order_id:
+            last_orders = Orders.objects.order_by('created_on').last()
+            if last_orders:
+                print(last_orders,"last_invoice----------")
+                # Extract the number part from the last invoice_number and increment it
+                last_orders_id = int(last_orders.order_id.replace('ORD', ''))
+                self.order_id = f'ORD{last_orders_id + 1:04d}'
+            else:
+                self.order_id = 'ORD0001'
+        super().save(*args, **kwargs)
 
 
 class OrderedItems(BaseModel):

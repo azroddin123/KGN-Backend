@@ -23,10 +23,10 @@ class User(AbstractBaseUser):
     email_otp        = models.CharField(max_length=6,blank=True,null=True)
     sms_otp          = models.CharField(max_length=6,blank=True,null=True)
     is_verified      = models.BooleanField(default=False)
-    pincode          = models.CharField(max_length=6,default="413512")
+    pincode          = models.ForeignKey(StorePincode, on_delete=models.SET_NULL, null=True, blank=True)
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
-    store_pincode    = models.OneToOneField(StorePincode, on_delete=models.SET_NULL, null=True, blank=True)  # One user, one store pincode
+
     USERNAME_FIELD = 'username'
     def __str__(self):
         return self.email
@@ -52,3 +52,5 @@ class User(AbstractBaseUser):
             if os.path.isfile(self.profile_pic.path):
                 os.remove(self.profile_pic.path)
         super(User, self).delete(*args, **kwargs)
+        
+        

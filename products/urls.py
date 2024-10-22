@@ -22,5 +22,11 @@ urlpatterns = [
     
     path('add-store',AddStoreAPI.as_view()),
     path('add-store/<str:pk>',AddStoreAPI.as_view()),
+    
+    path('review',ReviewAPI.as_view()),
+    path('review/<str:pk>',ReviewAPI.as_view()),
+    
+    path('contact',ContactAPI.as_view()),
+    path('contact/<str:pk>',ContactAPI.as_view()),
       
 ]

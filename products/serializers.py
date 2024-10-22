@@ -78,4 +78,14 @@ class StorePinSerializer(ModelSerializer):
         if obj.store_admin:
             return obj.store_admin.username
         return None
-        
+
+
+class ReviewSerializer(ModelSerializer):
+    class Meta :
+        model = Review
+        fields = "__all__"
+
+class ContactSerializer(ModelSerializer):
+    class Meta :
+        model = Contact
+        fields = "__all__"
