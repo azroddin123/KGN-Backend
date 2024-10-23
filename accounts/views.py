@@ -45,7 +45,7 @@ class RegisterUserApi(APIView):
             with transaction.atomic():
                 print(request.data)
                 mobile_number = request.data.get('mobile_number')
-                pincode   = request.data.get('pincode') 
+                pincode   = request.data.get('pincode',None) 
                 sp = StorePincode.objects.filter(pincode=pincode).first()
                 print(sp,"----------------------------")
                 sp_list = StorePincode.objects.values_list('pincode', flat=True)
@@ -59,6 +59,29 @@ class RegisterUserApi(APIView):
                 request.POST._mutable = True
                 request.data['sms_otp']  = sms_otp 
                 request.data['pincode'] = sp.id
+                otp = send_otp_to_phone(mobile_number,sms_otp) 
+                print(otp)
+                if  serializer.is_valid():
+                    print("valid")
+                    user = serializer.save()
+                    token = generate_token(user.mobile_number)
+                    return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
+                error_list = [serializer.errors[error][0] for error in serializer.errors]
+                return Response({"error": True, "message": error_list}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e) , "status_code" : 400},status=status.HTTP_400_BAD_REQUEST,)
+
+
+class RegisterDeliveryManApi(APIView):
+    def post(self,request,*args, **kwargs):
+        try : 
+            with transaction.atomic():
+                print(request.data)
+                mobile_number = request.data.get('mobile_number')
+                serializer = UserSerializer(data=request.data)
+                sms_otp   = randint(100000,999999)
+                request.POST._mutable = True
+                request.data['sms_otp']  = sms_otp 
                 otp = send_otp_to_phone(mobile_number,sms_otp) 
                 print(otp)
                 if  serializer.is_valid():
