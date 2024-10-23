@@ -273,7 +273,7 @@ class OrderPaymentAPI(APIView):
                     return Response({"error": True, "message": "Please Add Product in the cart First"}, status=status.HTTP_400_BAD_REQUEST)
                 print("-----------",request.thisUser)
                 # Fetch store based on user's pincode
-                store_pincode = StorePincode.objects.prefetch_related('store').filter(pincode=request.thisUser.store_pincode).first()
+                store_pincode = StorePincode.objects.prefetch_related('store').filter(pincode=request.thisUser.pincode).first()
 
                 print(store_pincode,"-----------------")
                 # If no store matches the pincode

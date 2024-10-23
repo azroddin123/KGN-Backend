@@ -4,7 +4,7 @@ from .managers import UserManager
 import uuid
 from portals.choices import UserChoices
 # Create your models here.
-from products.models import StorePincode
+from products.models import StorePincode,Store
 import os 
 class User(AbstractBaseUser):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)

@@ -70,7 +70,6 @@ class GenericMethodsMixin:
         serializer = self.serializer_class(current_page_data, many=True)
         return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
 
-
     def get_single_data(self, pk):
         try:
             print("get single data")
