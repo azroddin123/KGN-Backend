@@ -99,7 +99,7 @@ class OrderWithOrderedItemSerializer(ModelSerializer):
     store_name    = serializers.SerializerMethodField()
     class Meta :
         model = Orders
-        fields = ('id','user', 'amount', 'name', 'city', 'mobile_number', 'notes', 'email', 'is_paid', 'order_id', 'transaction_id', 'payment_status', 'order_status', 'delivery_boy', 'store_id', 'payment_type', 'delivery_address', 'delivery_cost', 'delivery_time', 'pincode','ordered_items','username','store_name')
+        fields = ('id','user', 'amount', 'name', 'city', 'mobile_number', 'notes', 'email', 'is_paid', 'order_id', 'transaction_id', 'payment_status', 'order_status', 'delivery_boy', 'store_id', 'payment_type', 'delivery_address', 'delivery_cost', 'delivery_time', 'pincode','ordered_items','username','store_name','created_on','updated_on')
     
     def get_username(self,obj):
         if obj.user:
