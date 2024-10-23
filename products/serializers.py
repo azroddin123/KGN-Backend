@@ -2,8 +2,6 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from products.models import *
 
-
-
 class CategorySerializer(ModelSerializer):
     class Meta :
         model = Category
@@ -78,7 +76,6 @@ class StorePinSerializer(ModelSerializer):
         if obj.store_admin:
             return obj.store_admin.username
         return None
-
 
 class ReviewSerializer(ModelSerializer):
     class Meta :

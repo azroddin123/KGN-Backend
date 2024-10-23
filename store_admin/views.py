@@ -145,8 +145,26 @@ class StoreOrdersAPI(GenericMethodsMixin,APIView):
 
 
 
-# class AssignOrderAPI(APIView):
-#     def put(self,request,*args,**kwargs):
-        
-#         pass
+
+class GetAllDeliveryMan(APIView):
+    def get(self,request,pk=None,*args,**kwargs):
+        if pk in ["0", None]:
+               data = User.objects.filter(user_role="Delivery_man")
+               response = paginate_data(User, DeliveryManSerializer1, request,data)
+               return Response(response,status=status.HTTP_200_OK)
     
+    
+class AssignOrderAPI(APIView):
+    def put(self,request,pk,*args,**kwargs):
+        try : 
+            object = Orders.objects.get(id=pk)
+            print(request.data)
+            serializer = OrdersSerializer(object,data=request.data,partial=True)
+            if serializer.is_valid():
+                    serializer.save()
+                    return Response({"error": False, "message": "Order Assigned Successfully" , "data" : serializer.data }, status=status.HTTP_202_ACCEPTED)
+            return Response({"error": True, "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except self.model.DoesNotExist:
+            return self.handle_does_not_exist_error()
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -28,6 +28,10 @@ urlpatterns = [
     path('add-store',AddStoreAPI.as_view()),
     path('add-store/<str:pk>',AddStoreAPI.as_view()),
     
+    # Get All Delivery Man
+    
+    path('delivery-man', GetAllDeliveryMan.as_view()),
+    path('assign-order/<str:pk>',AssignOrderAPI.as_view()),
     
     
       

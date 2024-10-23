@@ -1,8 +1,12 @@
 from rest_framework import serializers
 from products.models import * 
+from accounts.models import * 
 
-
-
+class DeliveryManSerializer1(serializers.ModelSerializer):
+    class Meta : 
+        model = User
+        fields = ('id','user_role','username','email')
+        
 
 class InventorySerializer1(serializers.ModelSerializer):
     product_name       = serializers.SerializerMethodField(read_only=True)
@@ -37,5 +41,4 @@ class InventorySerializer1(serializers.ModelSerializer):
         return None
         
             
-        
-    
+

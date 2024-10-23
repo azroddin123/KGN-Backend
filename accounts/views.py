@@ -48,16 +48,17 @@ class RegisterUserApi(APIView):
                 pincode   = request.data.get('pincode') 
                 sp = StorePincode.objects.filter(pincode=pincode).first()
                 print(sp,"----------------------------")
-                
+                sp_list = StorePincode.objects.values_list('pincode', flat=True)
                 if not sp:
                     return Response(
-                        {"error": True, "message": "We are currently not providing service in this area, but we will be launching soon"},
+                        {"error": True, "message": "We are currently not providing service in this area, but we will be launching soon" , "Available Pincode Area" : sp_list},
                         status=status.HTTP_400_BAD_REQUEST
                     )
                 serializer = UserSerializer(data=request.data)
                 sms_otp   = randint(100000,999999)
                 request.POST._mutable = True
                 request.data['sms_otp']  = sms_otp 
+                request.data['pincode'] = sp.id
                 otp = send_otp_to_phone(mobile_number,sms_otp) 
                 print(otp)
                 if  serializer.is_valid():
